@@ -6,6 +6,63 @@
 
 ---
 
+## 의존성 관리 규칙 (필수)
+
+### 문제 상황
+새 npm 패키지를 설치하면 `package.json`이 변경되지만 `pnpm-lock.yaml`이 업데이트되지 않을 수 있습니다. 이 경우 Vercel 빌드가 실패합니다:
+
+```
+ERR_PNPM_OUTDATED_LOCKFILE Cannot install with "frozen-lockfile"
+because pnpm-lock.yaml is not up to date with package.json
+```
+
+### 자동 검증 시스템
+이 문제를 자동으로 방지하기 위해 **두 가지 검증**이 작동합니다:
+
+#### 1. Pre-commit 훅 (로컬)
+`package.json` 변경 시 자동으로:
+1. `pnpm install` 실행 → `pnpm-lock.yaml` 생성
+2. lockfile을 자동으로 커밋에 포함
+
+```bash
+# 개발자가 할 일: 그냥 git commit 하면 됨
+git add package.json
+git commit -m "feat: add new dependency"
+# → Pre-commit 훅이 자동으로 pnpm install 실행
+# → pnpm-lock.yaml이 자동으로 staged됨
+```
+
+#### 2. GitHub Action (리모트)
+PR 생성 시:
+1. `package.json` 변경 감지
+2. 로컬에서 `pnpm install` 재실행
+3. lockfile이 최신인지 검증
+4. 오래되었으면 PR 검증 실패 + 댓글 작성
+
+### 수동 해결 (필요 시)
+만약 pre-commit 훅이 실행되지 않은 경우:
+
+```bash
+# 1. lockfile 업데이트
+pnpm install
+
+# 2. 커밋에 포함
+git add pnpm-lock.yaml
+git commit --amend --no-edit
+
+# 3. 푸시
+git push --force-with-lease
+```
+
+### 검증 스크립트 (수동 확인)
+```bash
+bash scripts/validate-lockfile.sh
+# → package.json vs pnpm-lock.yaml 상태 확인
+# → PR 전 수동으로 미리 확인 가능
+```
+
+---
+
 ## 자동 의도 감지 (Intent Detection)
 
 명시적인 `/command` 없이도 사용자 요청을 분석해 적절한 Skill을 자동 실행합니다.

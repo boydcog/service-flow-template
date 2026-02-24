@@ -1,0 +1,101 @@
+name: Validate Dependencies
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-lockfile:
+    runs-on: ubuntu-latest
+    name: Validate pnpm-lock.yaml
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Check if package.json changed
+        id: check-package
+        run: |
+          if git diff --name-only origin/main HEAD | grep -q "package.json"; then
+            echo "package_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "package_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate lockfile is updated
+        if: steps.check-package.outputs.package_changed == 'true'
+        run: |
+          echo "📋 package.json이 변경되었습니다. pnpm-lock.yaml 검증 중..."
+
+          cp pnpm-lock.yaml pnpm-lock.yaml.bak
+          pnpm install --frozen-lockfile || pnpm install
+
+          if ! diff -q pnpm-lock.yaml pnpm-lock.yaml.bak >/dev/null 2>&1; then
+            echo "❌ pnpm-lock.yaml이 오래되었습니다!"
+            echo "로컬에서 'pnpm install' 후 커밋을 업데이트하세요"
+            exit 1
+          fi
+
+          echo "✅ pnpm-lock.yaml이 최신 상태입니다"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify no conflicts
+        run: |
+          if grep -r "^<<<<<<< HEAD" . --include="*.yaml" --include="*.json"; then
+            echo "❌ Merge conflict 발견!"
+            exit 1
+          fi
+          echo "✅ Merge conflict 없음"
+
+      - name: Comment on PR if validation failed
+        if: failure() && github.event_name == 'pull_request'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: |
+          cat > comment.txt << 'EOF'
+          ## ⚠️ Dependency Validation Failed
+
+          **문제**: `package.json`이 변경되었지만 `pnpm-lock.yaml`이 업데이트되지 않았습니다.
+
+          **해결 방법**:
+          1. 로컬에서 아래 명령 실행:
+             ```bash
+             pnpm install
+             git add pnpm-lock.yaml
+             git commit --amend --no-edit
+             git push --force-with-lease
+             ```
+
+          2. 또는 GitHub 웹에서 "Resolve conflicts" 클릭 후 pnpm install 실행
+          EOF
+
+          echo "댓글 작성 준비 중..."
