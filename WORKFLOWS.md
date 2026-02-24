@@ -1,4 +1,4 @@
-# 🚀 Role-Based Workflows — Service Flow Template
+# Role-Based Workflows — Service Flow Template
 
 **컴포넌트 라이브러리 개발을 위한 역할별 자동화 워크플로우**
 
@@ -314,7 +314,7 @@ npm run verify
 
 ---
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Lint Fails
 ```bash

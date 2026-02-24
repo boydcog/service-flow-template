@@ -16,7 +16,7 @@
   - `_active_flow.txt`: 현재 작업 플로우 추적
   - `_schema_version.txt`: 현재 템플릿 버전 (v1)
 
-- 🔧 **startup.sh 고도화** (320줄 → orchestration_test 패턴 적용)
+- **startup.sh 고도화** (320줄 → orchestration_test 패턴 적용)
   - 의존성 감지 (git, gh CLI, brew)
   - git 초기화 + remote 설정 (HTTPS/SSH 폴백)
   - worktree 자동 정리 (잔여 worktree 정리)
@@ -25,7 +25,7 @@
   - 활성 플로우 복구 (마지막 플로우 상태 로드)
   - 상세한 상태 리포트 (의존성, 프로젝트 상태)
 
-- 📋 **manifests 확장**
+- **manifests 확장**
   - `admins.yaml`: 관리자 권한 관리 (orchestration_test 패턴)
   - `flow-defaults.yaml`: 플로우 기본값 정의
 
@@ -51,7 +51,7 @@
 - 📁 **.gitignore 확장**: `.claude/state/`, `.claude/migrations/` 추가
 
 ### Improved
-- 🚀 **세션 시작 안정성**: 네트워크 장애 복구력 향상
+- **세션 시작 안정성**: 네트워크 장애 복구력 향상
 - 🎯 **상태 추적 명확성**: 활성 플로우, 메타데이터로 진행상황 추적
 - 🔒 **권한 관리**: admins.yaml 기반 역할 기반 접근 제어 (RBAC)
 

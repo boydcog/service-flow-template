@@ -3,152 +3,160 @@ set -e
 
 echo ""
 echo "================================"
-echo "✅ 서비스 플로우 생성 완료!"
+echo "    !"
 echo "================================"
 echo ""
 
-# 1️⃣ 플로우 정보
+# 1⃣  
 FLOW_NAME="${1:-my-flow}"
 PROJECT_PATH="${2:-.}"
 
-echo "📦 플로우: $FLOW_NAME"
-echo "📂 경로: $PROJECT_PATH"
+echo " : $FLOW_NAME"
+echo " : $PROJECT_PATH"
 echo ""
 
-# 2️⃣ 포트 정리 (3000 - Dev Server)
-echo "🧹 포트 3000 정리 중..."
+# 2⃣   (3000 - Dev Server)
+echo "  3000  ..."
 if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
   lsof -ti:3000 | xargs kill -9 2>/dev/null || true
   sleep 2
 fi
-echo "✅ 포트 정리 완료"
+echo "   "
 echo ""
 
-# 3️⃣ 개발 서버 시작
-echo "🚀 개발 서버 실행 중 (localhost:3000)..."
+# 3⃣   
+echo "     (localhost:3000)..."
 cd "$PROJECT_PATH" 2>/dev/null || true
 npm run dev > /tmp/dev-server.log 2>&1 &
 DEV_SERVER_PID=$!
 sleep 8
 
 if ! kill -0 $DEV_SERVER_PID 2>/dev/null; then
-  echo "❌ 개발 서버 시작 실패"
+  echo "    "
   cat /tmp/dev-server.log
   exit 1
 fi
 
-echo "✅ 개발 서버 실행 중"
+echo "    "
 echo ""
 
-# 4️⃣ 브라우저 자동 오픈
-echo "🌐 브라우저 자동 오픈..."
-open "http://localhost:3000" 2>/dev/null || echo "🔗 http://localhost:3000 에서 확인하세요"
+# 4⃣   
+echo "   ..."
+open "http://localhost:3000" 2>/dev/null || echo " http://localhost:3000  "
 echo ""
 
-# 5️⃣ 사용자 검증 대기
-echo "👀 플로우 검증 중..."
-echo "   개발 서버에서 기능을 확인하세요."
-read -p "검증 완료? (y/n): " -r
+# 5⃣   
+echo "   ..."
+echo "      ."
+read -p " ? (y/n): " -r
 echo ""
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "❌ 검증 취소됨"
+  echo "  "
   kill $DEV_SERVER_PID 2>/dev/null || true
   exit 1
 fi
 
-# 6️⃣ 개발 서버 종료
-echo "🛑 개발 서버 종료..."
+# 6⃣   
+echo "   ..."
 kill $DEV_SERVER_PID 2>/dev/null || true
 wait $DEV_SERVER_PID 2>/dev/null || true
 echo ""
 
-# 7️⃣ 품질 검증 실행 (Strict Mode)
-echo "📊 품질 검증 시작 (Strict Mode)..."
+# 7⃣    (Strict Mode)
+echo "    (Strict Mode)..."
 echo ""
 
 # Format
-echo "✨ 포맷 정상화..."
+echo "  ..."
 npm run format
 if [ $? -ne 0 ]; then
-  echo "❌ 포맷 실패"
+  echo "  "
   exit 1
 fi
-echo "✅ 포맷 완료"
+echo "  "
 echo ""
 
-# 린트
-echo "📋 린트 검사 (에러 0개 필수)..."
+# 
+echo "   ( 0 )..."
 npm run lint
 if [ $? -ne 0 ]; then
-  echo "❌ Lint 실패 - PR 생성 불가"
+  echo " Lint  - PR  "
   exit 1
 fi
-echo "✅ Lint 통과"
+echo " Lint "
 echo ""
 
-# 타입 체크
-echo "🔤 타입 체크..."
+#  
+echo "  ..."
 npm run type-check
 if [ $? -ne 0 ]; then
-  echo "❌ Type Check 실패 - PR 생성 불가"
+  echo " Type Check  - PR  "
   exit 1
 fi
-echo "✅ Type Check 통과"
+echo " Type Check "
 echo ""
 
-# 테스트
-echo "🧪 테스트 실행..."
+# 
+echo "  ..."
 npm run test
 if [ $? -ne 0 ]; then
-  echo "❌ Test 실패 - PR 생성 불가"
+  echo " Test  - PR  "
   exit 1
 fi
-echo "✅ Test 통과"
+echo " Test "
 echo ""
 
-# 8️⃣ 최종 검증 요약
+# 8⃣   
 echo "=========================================="
-echo "✅ 품질 검증 완료 (Strict Mode 통과)"
+echo "    (Strict Mode )"
 echo "=========================================="
 echo ""
-echo "📊 검증 결과:"
-echo "  [Format]      ✅ 코드 포맷 정상"
-echo "  [Lint]        ✅ 에러 0개"
-echo "  [Type-check]  ✅ 타입 검증 통과"
-echo "  [Test]        ✅ 모든 테스트 통과"
+echo "  :"
+echo "  [Format]         "
+echo "  [Lint]          0"
+echo "  [Type-check]     "
+echo "  [Test]           "
 echo ""
-echo "🎉 완료! PR 생성 가능합니다."
+echo " ! PR  ."
 echo "=========================================="
 echo ""
 
-# 9️⃣ Git 준비
-echo "🔄 Git 변경사항 확인..."
+# 9⃣ Git 
+echo " Git  ..."
 git add flows/ 2>/dev/null || true
 git status --short
 echo ""
 
-# 🔟 PR 생성 확인
-echo "📝 PR 생성 준비..."
-read -p "PR을 생성하시겠습니까? (y/n): " -r
+#  PR  
+echo " PR  ..."
+read -p "PR ? (y/n): " -r
 echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
+  # Validate GitHub token before PR creation
+  source ./.claude/hooks/gh-token-validate.sh || exit 1
+
   BRANCH_NAME="flow/$FLOW_NAME-$(date +%s)"
+  git remote set-url origin "https://${GH_TOKEN}@github.com/boydcog/service-flow-template.git"
+
   git checkout -b "$BRANCH_NAME" 2>/dev/null || git switch -c "$BRANCH_NAME"
   git add flows/
-  git commit -m "[flow] $FLOW_NAME 서비스 플로우 생성" 2>/dev/null || true
+  git commit -m "[flow] $FLOW_NAME service flow creation" 2>/dev/null || true
 
-  gh pr create --title "[flow] $FLOW_NAME 서비스 플로우" \
-    --body "## 요약\n- 새 플로우: $FLOW_NAME\n\n## 검증 (Strict Mode)\n- ✅ 포맷: 통과\n- ✅ 린트: 에러 0개\n- ✅ 타입체크: 통과\n- ✅ 테스트: 100% 통과\n- ✅ 개발 서버: 기능 검증 완료" \
-    --base main 2>/dev/null || echo "PR 생성 스킵 (gh cli 필요)"
+  gh pr create --title "[flow] $FLOW_NAME service flow" \
+    --body "## Summary\n- New flow: $FLOW_NAME\n\n## Validation (Strict Mode)\n- Format: Pass\n- Lint: Error 0\n- Type-check: Pass\n- Test: 100% Pass\n- Dev Server: Verified" \
+    --base main 2>/dev/null || echo "PR creation skipped (gh cli required)"
 
-  echo "✅ PR 생성 완료"
+  # Remove token from URL (security)
+  git remote set-url origin "https://github.com/boydcog/service-flow-template.git"
+
+  echo "PR created successfully"
 else
-  echo "ℹ️  PR 생성 스킵됨"
+  echo "ℹ  PR  "
 fi
 
 echo ""
 echo "================================"
-echo "🎉 모든 작업 완료!"
+echo "   !"
 echo "================================"

@@ -1,4 +1,4 @@
-# 🚀 Service Flow Template
+# Service Flow Template
 
 **회사 전체가 공유하는 Claude Code 템플릿입니다.**
 
@@ -6,7 +6,7 @@
 
 ---
 
-## 🎯 개요
+## Overview
 
 이 템플릿은 **PRD → 컴포넌트 → 서비스 플로우** 까지의 전체 개발 워크플로우를 자동화합니다.
 
@@ -21,7 +21,7 @@
 
 ---
 
-## ⚡ 빠른 시작
+## Quick Start
 
 ### 1단계: 신원 설정
 
@@ -60,7 +60,7 @@
 
 ---
 
-## 📁 디렉토리 구조
+## Directory Structure
 
 ```
 service-flow-template/
@@ -83,7 +83,7 @@ service-flow-template/
 
 ---
 
-## 🎨 Emocog 테마
+## Emocog Theme
 
 전체 프로젝트는 **Emocog 테마**를 기반으로 합니다.
 
@@ -111,7 +111,7 @@ service-flow-template/
 
 ---
 
-## 📚 주요 문서
+## Documentation
 
 ### 개발자용
 
@@ -135,7 +135,7 @@ service-flow-template/
 
 ---
 
-## 🔄 브랜치 전략
+## Branch Strategy
 
 | 브랜치 | 내용 | `flows/` 추적 |
 |--------|------|--------|
@@ -151,7 +151,7 @@ service-flow-template/
 
 ---
 
-## 🔐 보안
+## Security
 
 ### 로컬 파일 보호
 
@@ -169,7 +169,7 @@ service-flow-template/
 
 ---
 
-## 🚀 세션 시작 자동화
+## Session Startup Automation
 
 매 세션 시작 시 자동으로:
 
@@ -192,7 +192,7 @@ service-flow-template/
 
 ---
 
-## 📋 완료 기준
+## Completion Criteria
 
 - [ ] 모든 필수 명령어 구현
 - [ ] 사용자 신원 및 토큰 보호 작동
@@ -203,7 +203,7 @@ service-flow-template/
 
 ---
 
-## 🤝 기여하기
+## Contributing
 
 ### 버그 리포트
 
@@ -226,7 +226,7 @@ GitHub Discussions에서 새로운 아이디어를 제안하거나 `/create-issu
 
 ---
 
-## 📚 참고 자료
+## References
 
 - [Emocog 테마](https://tweakcn.com/themes/cmlyp83mj000004kt9m73dbqt?p=custom)
 - [Next.js 문서](https://nextjs.org/docs)
@@ -236,7 +236,7 @@ GitHub Discussions에서 새로운 아이디어를 제안하거나 `/create-issu
 
 ---
 
-## 📞 지원
+## Support
 
 문제가 발생하거나 도움이 필요하면:
 
@@ -246,12 +246,12 @@ GitHub Discussions에서 새로운 아이디어를 제안하거나 `/create-issu
 
 ---
 
-## 📄 라이선스
+## License
 
 이 템플릿은 내부용입니다. 저작권 및 라이선스 정책을 참조하세요.
 
 ---
 
-**Happy Coding! 🚀**
+**Happy Coding!**
 
 시작하려면 `/setup`을 실행하세요.

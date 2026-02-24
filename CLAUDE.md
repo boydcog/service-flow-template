@@ -29,6 +29,55 @@
 
 ---
 
+## GitHub 토큰 검증 규칙 (필수)
+
+**모든 GitHub 작업 전에 반드시 실행**:
+
+### 1단계: `.gh-token` 파일 확인
+```bash
+if [ ! -f .gh-token ]; then
+  # 토큰 파일 없음
+  echo "❌ .gh-token 파일이 없습니다."
+  echo "템플릿 관리자에게 문의하세요:"
+  grep -A 5 "^admins:" .claude/manifests/admins.yaml | grep -E "name|github|email"
+  exit 1
+fi
+```
+
+### 2단계: 토큰 유효성 검증
+```bash
+GH_TOKEN=$(cat .gh-token)
+if [ -z "$GH_TOKEN" ]; then
+  echo "❌ .gh-token이 비어있습니다."
+  echo "템플릿 관리자에게 문의하세요"
+  exit 1
+fi
+
+# API 호출로 검증
+if ! curl -s -H "Authorization: token $GH_TOKEN" https://api.github.com/user > /dev/null 2>&1; then
+  echo "❌ 토큰이 유효하지 않습니다."
+  echo "템플릿 관리자에게 문의하세요"
+  exit 1
+fi
+```
+
+### 3단계: 토큰으로 인증 후 git 작업
+```bash
+GH_TOKEN=$(cat .gh-token)
+git remote set-url origin "https://${GH_TOKEN}@github.com/boydcog/service-flow-template.git"
+git push -u origin main
+# 이후 URL에서 토큰 제거 (보안)
+git remote set-url origin "https://github.com/boydcog/service-flow-template.git"
+```
+
+### 관리자 정보
+`.gh-token` 없거나 토큰이 유효하지 않으면 아래 관리자에게 문의:
+- **이름**: 보이드
+- **GitHub**: boydcog
+- **역할**: maintainer
+
+---
+
 ## 프로젝트 개요
 
 이 레포지토리는 회사 전체가 공유하는 **Claude Code 템플릿**입니다. 세 가지 역할이 협업하여 공통 컴포넌트 라이브러리와 서비스 플로우를 구축합니다:

@@ -37,15 +37,33 @@ WARN gh CLI 미설치"
 fi
 
 # ──────────────────────────────────────
-# 2. 사용자 신원 로드
+# 2. 사용자 신원 로드 & 권한 검증
 # ──────────────────────────────────────
 USER_NAME=""
+USER_ROLE="unknown"
+USER_COMMANDS=""
+
 if [ -f .user-identity ]; then
   USER_NAME=$(grep '^name:' .user-identity 2>/dev/null | sed 's/name: //' | tr -d '\n' || echo "")
   USER_ROLE=$(grep '^role:' .user-identity 2>/dev/null | sed 's/role: //' | tr -d '\n' || echo "unknown")
+
   echo "✅ 안녕하세요, $USER_NAME ($USER_ROLE)!"
   STATUS="$STATUS
-OK 사용자: $USER_NAME"
+OK 사용자: $USER_NAME ($USER_ROLE)"
+
+  # ──────────────────────────────────────
+  # 2.5. 역할별 권한 로드 (roles.yaml 기반)
+  # ──────────────────────────────────────
+  if [ -f ".claude/manifests/roles.yaml" ]; then
+    # 사용자 역할에 해당하는 commands 추출
+    USER_COMMANDS=$(grep -A 10 "^  $USER_ROLE:" ".claude/manifests/roles.yaml" 2>/dev/null | grep "commands:" | sed 's/.*commands: \[//' | sed 's/\].*//' || echo "")
+
+    if [ -n "$USER_COMMANDS" ]; then
+      echo "📋 권한: $USER_COMMANDS"
+      STATUS="$STATUS
+OK 권한 로드: $USER_ROLE"
+    fi
+  fi
 else
   STATUS="$STATUS
 WARN 사용자 미설정"
