@@ -57,8 +57,5 @@ out/
 # Tools Cache
 .qodo/
 
-# Workflows (requires token scope, ignored)
-.github/workflows/
-
 # Misc
 .cache/
