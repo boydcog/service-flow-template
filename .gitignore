@@ -1,0 +1,61 @@
+# User Identity & Tokens
+.user-identity
+.gh-token
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Project-Specific (각 프로젝트 독립, 동기화 안 함)
+flows/                                   # 프로젝트별 서비스 플로우 구현
+projects/                                # 프로젝트별 소스 코드
+.claude/state/logs/                      # 세션 로그
+.claude/state/pids/                      # 프로세스 ID
+.claude/state/*/                         # 프로젝트별 state
+
+# Template State (공유 안 함, 로컬만)
+.claude/state/_schema_version.txt
+.claude/state/_active_flow.txt
+state/
+pending-issues/
+
+# Migrations (마이그레이션 이력, 로컬만)
+.claude/migrations/v*-to-v*.sh.bak
+
+# Dependencies
+node_modules/
+.pnpm-store/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Build outputs
+.next/
+out/
+
+# Testing & Browser
+.playwright/
+.playwright-mcp/
+.firecrawl/
+
+# Tools Cache
+.qodo/
+
+# Misc
+.cache/

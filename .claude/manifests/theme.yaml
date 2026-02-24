@@ -1,0 +1,165 @@
+theme:
+  name: Emocog
+  version: "2.0.0"
+  source: "https://tweakcn.com/themes/cmlyp83mj000004kt9m73dbqt?p=custom"
+  description: "Emocog theme — flat design with OKLch color space"
+
+  dark_mode_strategy: class
+  dark_mode_selector: .dark
+
+  colors:
+    light:
+      primary: "oklch(0.488 0.243 264.376)"
+      primary_foreground: "oklch(0.985 0.001 106.423)"
+
+      secondary: "oklch(0.928 0.082 231.394)"
+      secondary_foreground: "oklch(0.985 0.001 106.423)"
+
+      background: "oklch(0.985 0.001 106.423)"
+      foreground: "oklch(0.208 0.042 265.755)"
+
+      accent: "oklch(0.985 0.001 106.423)"
+      accent_foreground: "oklch(0.208 0.042 265.755)"
+
+      destructive: "oklch(0.577 0.245 27.325)"
+      destructive_foreground: "oklch(0.985 0.001 106.423)"
+
+      muted: "oklch(0.898 0.008 106.423)"
+      muted_foreground: "oklch(0.483 0.066 265.755)"
+
+      card: "oklch(0.985 0.001 106.423)"
+      card_foreground: "oklch(0.208 0.042 265.755)"
+
+      popover: "oklch(0.985 0.001 106.423)"
+      popover_foreground: "oklch(0.208 0.042 265.755)"
+
+      border: "oklch(0.898 0.008 106.423)"
+      input: "oklch(0.985 0.001 106.423)"
+      ring: "oklch(0.488 0.243 264.376)"
+
+      chart_1: "oklch(0.488 0.243 264.376)"
+      chart_2: "oklch(0.928 0.082 231.394)"
+      chart_3: "oklch(0.577 0.245 27.325)"
+      chart_4: "oklch(0.585 0.194 88.225)"
+      chart_5: "oklch(0.483 0.066 265.755)"
+
+      sidebar_background: "oklch(0.985 0.001 106.423)"
+      sidebar_foreground: "oklch(0.208 0.042 265.755)"
+      sidebar_border: "oklch(0.898 0.008 106.423)"
+      sidebar_accent: "oklch(0.488 0.243 264.376)"
+
+    dark:
+      primary: "oklch(0.656 0.237 264.376)"
+      primary_foreground: "oklch(0.985 0.001 106.423)"
+
+      secondary: "oklch(0.735 0.189 288.225)"
+      secondary_foreground: "oklch(0.208 0.042 265.755)"
+
+      background: "oklch(0.131 0.013 265.755)"
+      foreground: "oklch(0.985 0.001 106.423)"
+
+      accent: "oklch(0.131 0.013 265.755)"
+      accent_foreground: "oklch(0.985 0.001 106.423)"
+
+      destructive: "oklch(0.706 0.219 37.325)"
+      destructive_foreground: "oklch(0.985 0.001 106.423)"
+
+      muted: "oklch(0.283 0.046 265.755)"
+      muted_foreground: "oklch(0.735 0.089 265.755)"
+
+      card: "oklch(0.188 0.017 265.755)"
+      card_foreground: "oklch(0.985 0.001 106.423)"
+
+      popover: "oklch(0.188 0.017 265.755)"
+      popover_foreground: "oklch(0.985 0.001 106.423)"
+
+      border: "oklch(0.283 0.046 265.755)"
+      input: "oklch(0.131 0.013 265.755)"
+      ring: "oklch(0.656 0.237 264.376)"
+
+      chart_1: "oklch(0.656 0.237 264.376)"
+      chart_2: "oklch(0.735 0.189 288.225)"
+      chart_3: "oklch(0.706 0.219 37.325)"
+      chart_4: "oklch(0.585 0.194 88.225)"
+      chart_5: "oklch(0.483 0.066 265.755)"
+
+      sidebar_background: "oklch(0.188 0.017 265.755)"
+      sidebar_foreground: "oklch(0.985 0.001 106.423)"
+      sidebar_border: "oklch(0.283 0.046 265.755)"
+      sidebar_accent: "oklch(0.656 0.237 264.376)"
+
+  typography:
+    font_sans: "Poppins, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font_serif: "Georgia, serif"
+    font_mono: "Menlo, 'Courier New', monospace"
+
+    sizes:
+      xs: "0.75rem"
+      sm: "0.875rem"
+      base: "1rem"
+      lg: "1.125rem"
+      xl: "1.25rem"
+      "2xl": "1.5rem"
+      "3xl": "1.875rem"
+      "4xl": "2.25rem"
+
+    weights:
+      light: 300
+      normal: 400
+      medium: 500
+      semibold: 600
+      bold: 700
+
+    line_heights:
+      tight: 1.2
+      snug: 1.375
+      normal: 1.5
+      relaxed: 1.625
+      loose: 2
+
+  spacing:
+    border_radius:
+      none: "0"
+      sm: "0.325rem"
+      base: "0.65rem"
+      md: "1.3rem"
+      lg: "1.95rem"
+      full: "9999px"
+
+    base_unit: "0.25rem"
+
+    scale:
+      0: "0"
+      1: "0.25rem"
+      2: "0.5rem"
+      3: "0.75rem"
+      4: "1rem"
+      5: "1.25rem"
+      6: "1.5rem"
+      8: "2rem"
+      10: "2.5rem"
+      12: "3rem"
+      16: "4rem"
+      20: "5rem"
+      24: "6rem"
+
+  shadows:
+    none: "none"
+    sm: "0 1px 2px 0 rgba(0, 0, 0, 0)"
+    base: "0 1px 3px 0 rgba(0, 0, 0, 0), 0 1px 2px 0 rgba(0, 0, 0, 0)"
+    md: "0 4px 6px -1px rgba(0, 0, 0, 0), 0 2px 4px -1px rgba(0, 0, 0, 0)"
+    lg: "0 10px 15px -3px rgba(0, 0, 0, 0), 0 4px 6px -2px rgba(0, 0, 0, 0)"
+    xl: "0 20px 25px -5px rgba(0, 0, 0, 0), 0 10px 10px -5px rgba(0, 0, 0, 0)"
+
+  animation:
+    duration_fast: "150ms"
+    duration_base: "300ms"
+    duration_slow: "500ms"
+    timing_function: "cubic-bezier(0.4, 0, 0.2, 1)"
+
+css_variables:
+  prefix: "--"
+  output_file: "components/theme/tokens.css"
+
+gluestack_tokens:
+  output_file: "components/theme/gluestack-theme.ts"

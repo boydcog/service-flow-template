@@ -1,0 +1,29 @@
+# 플로우 기본 설정
+# /flow에서 생성되는 flow 프로젝트의 기본값을 정의합니다
+
+# 기본 언어
+language: ko
+
+# 버전 관리
+versioning:
+  enabled: true
+  format: "v{N}"              # v1, v2, v3, ...
+  keep_all: true              # 이전 버전 보존
+
+# 출력 경로
+output_paths:
+  flows_dir: ./.claude/artifacts/flows
+  screenshots_dir: ./test-screenshots
+  metadata_file: metadata.json
+
+# 프로젝트 기본 구성
+project_defaults:
+  web_framework: "vite"       # vite | next | remix
+  package_manager: "pnpm"
+  styling: "tailwind"
+  ui_components: "shadcn"
+
+# 상태 저장 경로
+state_paths:
+  active_flow_file: ./.claude/state/_active_flow.txt
+  metadata_dir: ./.claude/state

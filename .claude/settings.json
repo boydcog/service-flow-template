@@ -1,0 +1,54 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Task",
+      "TaskCreate",
+      "TaskUpdate",
+      "TaskList",
+      "TeamCreate",
+      "SendMessage",
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "LSP",
+      "NotebookEdit",
+      "AskUserQuestion",
+      "WebFetch",
+      "WebSearch",
+      "mcp__*"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/startup.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "components/(web|native)/ui/.*\\.tsx$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/check-sync.sh || true"
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}

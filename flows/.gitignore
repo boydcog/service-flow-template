@@ -1,0 +1,7 @@
+# gitignore: Service Flow Template
+# flows/ 디렉토리는 각 세션별로 생성되고 공유되지 않습니다.
+# 공유 필요 시: git update-index --no-skip-worktree flows/
+
+*
+!.gitignore
+!README.md

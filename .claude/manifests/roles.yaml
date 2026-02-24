@@ -1,0 +1,45 @@
+roles:
+  admin:
+    label: "관리자"
+    description: "템플릿 및 시스템 전반 관리"
+    commands: [setup, admin, designer, flow, create-issue]
+    can_modify_template: true
+    can_modify_components: true
+    can_modify_specs: true
+    can_manage_team: true
+    can_create_flows: true
+
+  developer:
+    label: "개발자"
+    description: "컴포넌트 개발 및 템플릿 유지보수"
+    commands: [setup, admin, designer, flow, create-issue]
+    can_modify_template: true
+    can_modify_components: true
+    can_modify_specs: true
+    can_manage_team: false
+    can_create_flows: true
+
+  designer:
+    label: "디자이너"
+    description: "컴포넌트 설계 및 구현"
+    commands: [setup, designer, flow, create-issue]
+    can_modify_template: false
+    can_modify_components: true
+    can_modify_specs: false
+    can_manage_team: false
+    can_create_flows: true
+
+  pm:
+    label: "기획자"
+    description: "서비스 플로우 설계 및 바이브코딩"
+    commands: [setup, flow, create-issue]
+    can_modify_template: false
+    can_modify_components: false
+    can_modify_specs: false
+    can_manage_team: false
+    can_create_flows: true
+
+permission_errors:
+  insufficient_role: "❌ 권한 부족. 필요 역할: {required_role}"
+  command_denied: "❌ {role}은(는) {command} 명령어를 사용할 수 없습니다."
+  modify_denied: "❌ {user}은(는) {target}을(를) 수정할 권한이 없습니다."

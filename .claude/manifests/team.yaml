@@ -1,0 +1,19 @@
+team:
+  admins:
+    - name: "보이드"
+      github: "boydcog"
+      role: admin
+      email: "voyd@example.com"
+      joined_date: "2024-02-24"
+
+  developers: []
+
+  designers: []
+
+  pms: []
+
+metadata:
+  total_members: 1
+  last_updated: "2024-02-24"
+  maintenance_notes: |
+    Admin에서 `/admin` 명령어 > "팀원 추가"로 팀원을 추가할 수 있습니다.
