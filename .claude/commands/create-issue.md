@@ -46,13 +46,21 @@ elif echo "$PULL_RESULT" | grep -q "pull-failed"; then
   if echo "$PULL_RESULT2" | grep -q "pull-failed-again"; then
     git rebase --abort 2>/dev/null || true
     if [ "$STASHED" = "true" ]; then
-      git stash pop 2>/dev/null || true
+      if ! git stash pop; then
+        echo "⚠️  로컬 변경사항 복구 중 충돌이 발생했습니다."
+        echo "   'git status'를 실행하여 수동으로 해결해주세요."
+        exit 1
+      fi
     fi
     echo "❌ Git pull 실패 (네트워크 오류 또는 충돌)"
     exit 1
   else
     if [ "$STASHED" = "true" ]; then
-      git stash pop 2>/dev/null || true
+      if ! git stash pop; then
+        echo "⚠️  로컬 변경사항 복구 중 충돌이 발생했습니다."
+        echo "   'git status'를 실행하여 수동으로 해결해주세요."
+        exit 1
+      fi
     fi
     echo "✅ 최신 커밋 적용됨 (복구 완료)"
   fi
@@ -74,6 +82,8 @@ if [ "$CURRENT_SCHEMA" != "$TARGET_SCHEMA" ]; then
   if [ -f "$MIGRATION_SCRIPT" ]; then
     if bash "$MIGRATION_SCRIPT"; then
       echo "✅ 마이그레이션 완료"
+      echo "$TARGET_SCHEMA" > ".claude/state/_schema_version.txt"
+      echo "   • 스키마 버전 업데이트: $TARGET_SCHEMA"
     else
       echo "❌ 마이그레이션 실패"
       exit 1
