@@ -6,6 +6,72 @@
 
 ---
 
+## Git 워크플로우 규칙 (필수)
+
+### 원칙: Main 브랜치 보호
+
+**Main 브랜치에 직접 커밋하면 안 됩니다. 항상 PR을 통해 변경사항을 반영합니다.**
+
+### 올바른 워크플로우
+
+```bash
+# 1단계: 새로운 브랜치 생성
+git checkout -b fix/your-change-name
+# 또는
+git checkout -b feat/your-feature-name
+
+# 2단계: 변경사항 작업 및 커밋
+git add .
+git commit -m "커밋 메시지"
+
+# 3단계: 브랜치 푸시
+git push -u origin fix/your-change-name
+
+# 4단계: PR 생성
+bash .claude/hooks/create-pr.sh fix/your-change-name "PR 제목" "PR 설명"
+```
+
+### 금지 사항
+
+```bash
+# 금지: Main 브랜치에 직접 커밋
+git checkout main
+git commit -m "..."  ❌ 절대 하면 안 됨
+
+# 금지: Main에 직접 푸시
+git push origin main  ❌ 절대 하면 안 됨
+```
+
+### 브랜치 네이밍 규칙
+
+| 용도 | 브랜치명 | 예시 |
+|------|---------|------|
+| 버그 수정 | `fix/*` | `fix/gh-token-auth` |
+| 새 기능 | `feat/*` | `feat/intent-detection` |
+| 개선 | `improve/*` | `improve/performance` |
+| 문서 | `docs/*` | `docs/setup-guide` |
+| 리팩토링 | `refactor/*` | `refactor/auth-flow` |
+
+### 자동 검증
+
+만약 실수로 main에 커밋했다면:
+
+```bash
+# 1. 마지막 커밋을 되돌림
+git reset --soft HEAD~1
+
+# 2. 새 브랜치 생성
+git checkout -b fix/your-change
+
+# 3. 변경사항 커밋
+git commit -m "커밋 메시지"
+
+# 4. PR 생성
+bash .claude/hooks/create-pr.sh fix/your-change "PR 제목"
+```
+
+---
+
 ## 의존성 관리 규칙 (필수)
 
 ### 문제 상황

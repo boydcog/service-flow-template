@@ -149,7 +149,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   git config --local user.name "Claude Code Bot"
   git config --local user.email "bot@claudecode.local"
   git config --local credential.helper store
-  echo "https://:${GH_TOKEN}@github.com" | git credential approve
+  echo "https://:${GH_TOKEN}@github.com" | git credential approve 2>/dev/null || true
 
   git checkout -b "$BRANCH_NAME" 2>/dev/null || git switch -c "$BRANCH_NAME"
   git add components/$FRAMEWORK/ui/$COMPONENT_NAME.*
@@ -161,38 +161,20 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     exit 1
   }
 
-  # GitHub API로 PR 생성 (.gh-token만 사용)
-  REPO_URL=$(git remote get-url origin | sed 's|.*github.com[:/]||' | sed 's|\.git$||')
-  IFS='/' read -r OWNER REPO_NAME <<< "$REPO_URL"
+  # PR 생성 (create-pr.sh 호출 - 중복 로직 제거)
+  PR_TITLE="[designer] $COMPONENT_NAME component"
+  PR_BODY="## Summary
+- New component: $COMPONENT_NAME
+- Framework: $FRAMEWORK
 
-  PR_DATA=$(cat <<'EOF'
-{
-  "title": "[designer] COMPONENT_NAME component",
-  "body": "## Summary\n- New component: COMPONENT_NAME\n- Framework: FRAMEWORK\n\n## Validation (Strict Mode)\n- Format: Pass\n- Lint: Error 0\n- Type-check: Pass\n- Test: 100% Pass\n- Storybook: Verified",
-  "head": "BRANCH_NAME",
-  "base": "main"
-}
-EOF
-)
+## Validation (Strict Mode)
+- Format: Pass
+- Lint: Error 0
+- Type-check: Pass
+- Test: 100% Pass
+- Storybook: Verified"
 
-  PR_DATA="${PR_DATA//COMPONENT_NAME/$COMPONENT_NAME}"
-  PR_DATA="${PR_DATA//FRAMEWORK/$FRAMEWORK}"
-  PR_DATA="${PR_DATA//BRANCH_NAME/$BRANCH_NAME}"
-
-  PR_RESPONSE=$(curl -s -X POST \
-    -H "Authorization: token $GH_TOKEN" \
-    -H "Accept: application/vnd.github.v3+json" \
-    -H "Content-Type: application/json" \
-    -d "$PR_DATA" \
-    "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls")
-
-  PR_NUMBER=$(echo "$PR_RESPONSE" | grep -o '"number": [0-9]*' | grep -o '[0-9]*' | head -1)
-
-  if [ -n "$PR_NUMBER" ]; then
-    echo "PR 생성 성공: #$PR_NUMBER"
-  else
-    echo "PR 생성 실패 (GitHub API 오류)"
-  fi
+  bash ./.claude/hooks/create-pr.sh "$BRANCH_NAME" "$PR_TITLE" "$PR_BODY"
 else
   echo "PR 생성 스킵"
 fi
