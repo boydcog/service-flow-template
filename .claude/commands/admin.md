@@ -11,6 +11,41 @@
 
 ## 실행 지시 (Claude Code)
 
+### 0단계: Git 동기화 및 마이그레이션 (필수)
+
+```bash
+echo "🔄 최신 상태 동기화 중..."
+
+# 1. Git 동기화
+git fetch origin
+if ! git pull --rebase origin main 2>&1 | grep -q "Already up to date"; then
+  echo "✅ 최신 커밋 적용됨"
+else
+  echo "✅ 이미 최신 상태"
+fi
+
+# 2. 마이그레이션 감지 및 자동 실행
+CURRENT_SCHEMA=$(cat ".claude/state/_schema_version.txt" 2>/dev/null || echo "v1")
+TARGET_SCHEMA=$(cat ".claude/migrations/_target_version.txt" 2>/dev/null || echo "v1")
+
+if [ "$CURRENT_SCHEMA" != "$TARGET_SCHEMA" ]; then
+  echo "🔄 마이그레이션 감지: $CURRENT_SCHEMA → $TARGET_SCHEMA"
+  MIGRATION_SCRIPT=".claude/migrations/${CURRENT_SCHEMA}-to-${TARGET_SCHEMA}.sh"
+  if [ -f "$MIGRATION_SCRIPT" ]; then
+    if bash "$MIGRATION_SCRIPT"; then
+      echo "✅ 마이그레이션 완료"
+    else
+      echo "❌ 마이그레이션 실패"
+      exit 1
+    fi
+  else
+    echo "⚠️  마이그레이션 스크립트 없음: $MIGRATION_SCRIPT"
+  fi
+fi
+
+echo ""
+```
+
 ### 1단계: 선행 조건 확인
 
 #### 1-1. 신원 파일 확인
