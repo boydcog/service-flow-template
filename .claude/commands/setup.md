@@ -12,6 +12,10 @@
 
 이 명령을 실행할 때 Claude가 따라야 할 단계:
 
+0. 필수 도구 자동 설치 및 Git Remote 설정
+ - **도구 설치**: git, gh CLI, Node.js, pnpm (자동 설치)
+ - **Git Remote 설정**: 자동 감지 (startup.sh 참조)
+
 1. `.user-identity` 파일이 이미 존재하는지 확인
  - 존재하면: "이미 설정됨" 메시지 표시하고, 수정 여부 확인
  - 없으면: 새로 설정 시작
@@ -39,6 +43,15 @@
 6. 완료 메시지 출력:
  - 설정된 신원 정보 확인
  - 다음 사용 가능한 명령어 안내 (역할에 따라)
+
+7. 작업 의도 질의 (자동 의도 감지 시스템):
+ - AskUserQuestion으로 "어떤 작업을 하시겠습니까?" 질의
+ - 역할에 따라 선택지 제공:
+   - **Designer**: 컴포넌트 제작, 스토리북 작성
+   - **PM/Designer**: 서비스 플로우 설계
+   - **모든 역할**: 이슈 제보, 기타 작업
+ - 사용자 답변 후 auto-dispatcher.sh로 의도 감지
+ - 권한에 맞는 Skill 자동 실행 (slash command 없이)
 
 ---
 
@@ -181,6 +194,78 @@ EOF
 - 리포지토리 상태 확인: `git status`
 
 ---
+
+## 전체 플로우
+
+### 1단계: 의존성 + Git 설정 자동화
+
+```
+/setup 실행
+  ↓
+[1/5] git 설치 확인... OK (또는 자동 설치)
+[2/5] gh CLI 설치 확인... OK (또는 자동 설치)
+[3/5] Node.js 설치 확인... OK (또는 자동 설치)
+[4/5] pnpm 설치 확인... OK (또는 자동 설치)
+[5/5] Git Remote 확인... OK (또는 설정)
+```
+
+### 2단계: 사용자 정보 입력
+
+```
+사용자 이름 입력
+  ↓
+역할 선택 (admin/developer/designer/pm)
+  ↓
+GitHub 사용자명 입력
+  ↓
+GitHub 토큰 입력
+```
+
+### 3단계: 자동 완료 및 작업 시작
+
+```
+설정 파일 생성 (.user-identity, .gh-token)
+  ↓
+Git Remote 설정 (git@github.com:{username}/service-flow-template.git)
+  ↓
+git pull (최신 코드 동기화)
+  ↓
+작업 의도 질의
+  ├─ "어떤 작업을 하시겠습니까?"
+  ├─ 역할별 선택지 제시
+  └─ 사용자 답변 입력
+  ↓
+자동 의도 감지 (auto-dispatcher.sh)
+  ├─ 사용자 답변 분석
+  ├─ 권한 확인
+  └─ 해당 Skill 자동 실행 (slash command 없이)
+  ↓
+선택한 작업 시작!
+  - /designer — 컴포넌트 제작
+  - /flow — 플로우 설계
+  - /create-issue — 이슈 제보
+  - /admin — 템플릿 관리
+```
+
+### Git Remote 설정 우선순위
+
+1. **`.user-identity`에서 GitHub 사용자명** (가장 우선)
+   - 사용자가 입력한 GitHub 계정으로 자동 구성
+   - 예: `git@github.com:boydcog/service-flow-template.git`
+
+2. **`.git-remote-url` 파일** (있으면 사용)
+   - 커스텀 repository URL
+
+3. **GitHub API 자동 감지** (gh token 있을 때)
+   - `.gh-token`으로 GitHub에서 자동 조회
+
+4. **기본값** (기본 repository)
+   - `git@github.com:boydcog/service-flow-template.git`
+
+### OS별 지원
+
+- **macOS/Linux**: `startup.sh` (자동 실행, Homebrew/apt-get)
+- **Windows**: `startup.ps1` (수동 설치 안내, Git Bash 필요)
 
 ## 다음 단계
 

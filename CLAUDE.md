@@ -72,6 +72,134 @@ bash .claude/hooks/create-pr.sh fix/your-change "PR 제목"
 
 ---
 
+## 세션 시작 프로세스 (필수)
+
+**원칙**: 모든 작업을 시작하기 전에 Git에서 최신 상태를 끌어오고, 필요시 마이그레이션을 수행하여 **로컬과 Git의 상태를 항상 맞춥니다.**
+
+### 1단계: 매 세션/작업 시작 시 Git 동기화 및 마이그레이션
+
+```bash
+# 자동화된 방식 (권장)
+bash .claude/hooks/startup.sh
+```
+
+또는 수동으로:
+
+```bash
+# 1. 최신 상태 끌어오기 (rebase 모드)
+git fetch origin
+git pull --rebase origin main
+
+# 2. 마이그레이션 필요 시 감지
+if [ "$(cat .claude/state/_schema_version.txt)" != "$(cat .claude/migrations/_target_version.txt)" ]; then
+  echo "마이그레이션 필요"
+  CURRENT=$(cat .claude/state/_schema_version.txt)
+  TARGET=$(cat .claude/migrations/_target_version.txt)
+  bash .claude/migrations/${CURRENT}-to-${TARGET}.sh
+fi
+
+# 3. 상태 확인
+bash .claude/hooks/check-status.sh
+```
+
+### 2단계: 역할별 명령어 실행 전 Git 동기화
+
+**모든 `/admin`, `/designer`, `/flow`, `/create-issue` 명령어 실행 전**:
+
+```bash
+# 최신 상태 동기화
+git fetch origin && git pull --rebase origin main
+
+# 명령어 실행
+/admin  # 또는 /designer, /flow, /create-issue
+```
+
+### 3단계: 작업 완료 후 변경사항 확인
+
+```bash
+# 변경사항 확인 (GitHub 진입 없이)
+bash .claude/hooks/check-status.sh --pr
+bash .claude/hooks/check-status.sh --local
+```
+
+### Startup 훅 자동화 (`.claude/hooks/startup.sh`)
+
+매 세션 시작 시 자동으로 수행되는 작업:
+
+1. **의존성 확인** — git, gh CLI, brew 설치 여부
+2. **사용자 신원 로드** — .user-identity에서 이름, 역할, GitHub 정보 로드
+3. **권한 로드** — roles.yaml 기반 역할별 명령어 권한 로드
+4. **GitHub 토큰 로드** — .gh-token 파일에서 토큰 로드 및 git 인증 설정
+5. **로컬 파일 보호** — .user-identity, .gh-token git skip-worktree 적용
+6. **Git 초기화 및 pull** — git pull --rebase origin main 자동 실행
+7. **마이그레이션 감지 및 실행** — _schema_version vs _target_version 비교 후 마이그레이션 자동 실행
+8. **활성 플로우 복구** — _active_flow.txt에서 진행 중인 플로우 복구
+9. **컴포넌트 동기화 확인** — Web/Native 컴포넌트 동기화 상태 검증
+10. **최종 상태 리포트** — 프로젝트 상태, 컴포넌트 개수, 현재 브랜치 등 요약
+
+**결과**:
+```
+=== Service Flow Template — Session Start ===
+
+✅ 안녕하세요, boydcog (admin)!
+📋 권한: setup, admin, designer, flow, create-issue
+✅ GitHub 토큰 로드됨
+✅ Git 인증 설정 완료 (.gh-token 기반)
+✅ git pull 완료
+
+프로젝트 상태:
+  웹 컴포넌트: 48개
+  네이티브 컴포넌트: 12개
+  활성 플로우: 미설정
+  현재 브랜치: main
+  GH 토큰: true
+  git 연결: true
+
+명령어: /setup  /admin  /designer  /flow  /create-issue
+```
+
+### 마이그레이션 프로세스
+
+#### 마이그레이션이 필요한 경우
+
+1. **파일 구조 변경** — `.claude/state/` 디렉토리 재구성
+2. **설정 스키마 변경** — roles.yaml, theme.yaml 형식 변경
+3. **상태 파일 마이그레이션** — flows/, .claude/state/ 초기화
+
+#### 마이그레이션 수행 방법
+
+```bash
+# 1. 현재 버전 확인
+echo "현재 버전: $(cat .claude/state/_schema_version.txt)"
+echo "목표 버전: $(cat .claude/migrations/_target_version.txt)"
+
+# 2. 마이그레이션 필요 시 자동 실행
+bash .claude/hooks/startup.sh
+
+# 또는 수동 실행
+CURRENT=$(cat .claude/state/_schema_version.txt)
+TARGET=$(cat .claude/migrations/_target_version.txt)
+bash .claude/migrations/${CURRENT}-to-${TARGET}.sh
+
+# 3. 로그 확인
+cat .claude/state/logs/migrations.log
+```
+
+#### 마이그레이션 예 (v1 → v2)
+
+```bash
+bash .claude/migrations/v1-to-v2.sh
+```
+
+**수행 작업**:
+- .user-identity, .gh-token git skip-worktree 적용
+- flows/ 디렉토리 .gitignore 설정
+- .claude/state/ 캐시 정리
+- _schema_version.txt = v2로 업데이트
+- 마이그레이션 로그 기록
+
+---
+
 ## 의존성 관리 규칙 (필수)
 
 ### 문제 상황
