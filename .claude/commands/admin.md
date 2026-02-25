@@ -12,31 +12,50 @@
 ## 실행 지시 (Claude Code)
 
 ### 1단계: 선행 조건 확인
+
+#### 1-1. 신원 파일 확인
 ```bash
-# .user-identity 확인
-if [ ! -f ".user-identity" ]; then
-    Skill("setup")
-    exit
+if [ ! -f .user-identity ]; then
+  echo "❌ 사용자 신원이 설정되지 않았습니다"
+  echo "먼저 /setup을 실행해주세요"
+  exit 1
+fi
+```
+
+#### 1-2. 권한 검증 (admin, developer만 가능)
+```bash
+# 사용자 정보 로드
+USER_NAME=$(grep '^name:' .user-identity | sed 's/name: //')
+USER_ROLE=$(grep '^role:' .user-identity | sed 's/role: //')
+
+# 권한 검증: admin 또는 developer만 가능
+if [[ "$USER_ROLE" != "admin" && "$USER_ROLE" != "developer" ]]; then
+  echo "❌ 권한 없음"
+  echo "역할 [$USER_ROLE]은 /admin을 사용할 수 없습니다"
+  echo "필요한 권한: admin, developer"
+  echo ""
+  echo "현재 역할이 할 수 있는 작업:"
+  echo "- /designer — 컴포넌트 제작"
+  echo "- /flow — 플로우 설계"
+  echo "- /create-issue — 이슈 제보"
+  exit 1
 fi
 
-# 권한 검증 (admin/developer만 가능)
-USER_ROLE=$(grep '^role:' .user-identity | sed 's/role: //')
-if [[ ! "$USER_ROLE" =~ ^(admin|developer)$ ]]; then
-    echo "❌ 역할 $USER_ROLE은 /admin을 사용할 수 없습니다"
-    echo "필요 역할: admin 또는 developer"
-    exit 1
-fi
+echo "✅ 권한 확인 완료"
+echo "역할: $USER_ROLE | 사용자: $USER_NAME"
+echo ""
+echo "이 세션에서는 /admin을 사용해서 템플릿을 관리합니다."
 ```
 
 ### 2단계: 관리 옵션 선택 (AskUserQuestion)
 ```
 관리 옵션을 선택하세요:
-  1. 컴포넌트 스펙 관리 (.claude/spec/)
-  2. 팀원 관리 (.claude/manifests/team.yaml)
-  3. 테마 업데이트 (.claude/manifests/theme.yaml)
-  4. 역할 및 권한 관리 (.claude/manifests/roles.yaml)
-  5. CHANGELOG 작성
-  6. 변경사항 확인 → bash .claude/hooks/check-status.sh
+ 1. 컴포넌트 스펙 관리 (.claude/spec/)
+ 2. 팀원 관리 (.claude/manifests/team.yaml)
+ 3. 테마 업데이트 (.claude/manifests/theme.yaml)
+ 4. 역할 및 권한 관리 (.claude/manifests/roles.yaml)
+ 5. CHANGELOG 작성
+ 6. 변경사항 확인 → bash .claude/hooks/check-status.sh
 ```
 
 ### 3단계: 워크플로우 자동 실행
@@ -114,28 +133,28 @@ bash .claude/hooks/check-status.sh --pr
 ### 1단계: 신원 및 권한 확인
 
 ```
-✅ 신원: 보이드 (admin)
-✅ 권한: 템플릿 관리 가능
+ 신원: 보이드 (admin)
+ 권한: 템플릿 관리 가능
 
 다음 단계: 관리 옵션 선택
 ```
 
 **권한 없음 시**:
 ```
-❌ designer은 /admin 명령어를 사용할 수 없습니다.
+ designer은 /admin 명령어를 사용할 수 없습니다.
 필요 역할: admin 또는 developer
 ```
 
 ### 2단계: 관리 옵션 선택
 
 ```
-⚙️  관리 옵션을 선택하세요:
-  1. 📚 컴포넌트 스펙 관리
-  2. 👥 팀원 관리
-  3. 🎨 테마 업데이트
-  4. 🔐 역할 및 권한 관리
-  5. 📋 CHANGELOG 작성
-  6. 📊 통계 보기
+ 관리 옵션을 선택하세요:
+ 1. 컴포넌트 스펙 관리
+ 2. 팀원 관리
+ 3. 테마 업데이트
+ 4. 역할 및 권한 관리
+ 5. CHANGELOG 작성
+ 6. 통계 보기
 
 선택:
 > 1
@@ -148,7 +167,7 @@ bash .claude/hooks/check-status.sh --pr
 ### 진행 과정
 
 ```
-📚 컴포넌트 스펙 관리
+ 컴포넌트 스펙 관리
 ====================
 
 현재 스펙:
@@ -156,14 +175,14 @@ bash .claude/hooks/check-status.sh --pr
 - flow-spec.md (플로우 컨벤션)
 
 액션 선택:
-  1. ✏️  스펙 수정
-  2. 📖 스펙 보기
-  3. 📌 버전 관리
+ 1. 스펙 수정
+ 2. 스펙 보기
+ 3. 버전 관리
 
 선택:
 > 1
 
-📝 component-spec.md 수정:
+ component-spec.md 수정:
 
 현재 내용:
 ────────────────────
@@ -176,11 +195,11 @@ bash .claude/hooks/check-status.sh --pr
 ────────────────────
 
 수정할 섹션:
-  1. Props 정의
-  2. Emocog 테마 사용
-  3. 접근성 (A11y)
-  4. 테스트
-  5. 체크리스트
+ 1. Props 정의
+ 2. Emocog 테마 사용
+ 3. 접근성 (A11y)
+ 4. 테스트
+ 5. 체크리스트
 
 선택:
 > 2
@@ -191,12 +210,12 @@ bash .claude/hooks/check-status.sh --pr
 ```typescript
 // Tailwind CSS 유틸리티 클래스
 <button className="bg-primary text-primary-foreground">
-  Primary Button
+ Primary Button
 </button>
 
 // 또는 CSS 변수 (권장)
 <button className="bg-[var(--emocog-primary)] text-[var(--emocog-primary-foreground)]">
-  Primary Button
+ Primary Button
 </button>
 ```
 ────────────────────
@@ -212,24 +231,24 @@ bash .claude/hooks/check-status.sh --pr
 >
 > ```typescript
 > <button className="
->   bg-primary text-primary-foreground
->   hover:opacity-90 transition-all
->   dark:bg-primary dark:text-primary-foreground
+> bg-primary text-primary-foreground
+> hover:opacity-90 transition-all
+> dark:bg-primary dark:text-primary-foreground
 > ">
->   Primary Button
+> Primary Button
 > </button>
 > ```
 
-✅ 스펙이 업데이트되었습니다!
+ 스펙이 업데이트되었습니다!
 
 변경 사항:
 - Emocog 테마 사용 섹션 업데이트
 - 다크 모드 예제 추가
 
-🔄 git worktree 생성 중...
+ git worktree 생성 중...
 브랜치: main-update-specs (임시)
 
-📝 CHANGELOG 작성하시겠습니까? (y/n):
+ CHANGELOG 작성하시겠습니까? (y/n):
 > y
 ```
 
@@ -240,30 +259,30 @@ bash .claude/hooks/check-status.sh --pr
 ### 팀원 추가
 
 ```
-👥 팀원 관리
+ 팀원 관리
 ============
 
 현재 팀:
 - 보이드 (admin)
 
 액션 선택:
-  1. ➕ 팀원 추가
-  2. ❌ 팀원 제거
-  3. 📋 팀 조회
+ 1. 팀원 추가
+ 2. 팀원 제거
+ 3. 팀 조회
 
 선택:
 > 1
 
-📝 새 팀원 정보 입력:
+ 새 팀원 정보 입력:
 
 이름:
 > 홍길동
 
 역할:
-  1. admin
-  2. developer
-  3. designer
-  4. pm
+ 1. admin
+ 2. developer
+ 3. designer
+ 4. pm
 
 선택:
 > 3
@@ -284,7 +303,7 @@ GitHub 사용자명:
 > y
 
 ========================
-✅ 팀원이 추가되었습니다!
+ 팀원이 추가되었습니다!
 
 업데이트된 팀:
 - 보이드 (admin)
@@ -297,12 +316,12 @@ PR 생성 대기 중...
 ### 팀원 제거
 
 ```
-❌ 팀원 제거
+ 팀원 제거
 ===========
 
 제거할 팀원 선택:
-  1. 홍길동 (designer)
-  2. 김개발 (developer)
+ 1. 홍길동 (designer)
+ 2. 김개발 (developer)
 
 선택 또는 이름 입력:
 > 1
@@ -310,7 +329,7 @@ PR 생성 대기 중...
 정말 홍길동을 제거하시겠습니까? (y/n):
 > y
 
-⚠️  홍길동이 제거되었습니다.
+ 홍길동이 제거되었습니다.
 
 영향받는 항목:
 - 기존 PR (hong-gildong)은 유지됨
@@ -320,7 +339,7 @@ PR 생성 대기 중...
 ### 팀 조회
 
 ```
-📋 현재 팀 구성
+ 현재 팀 구성
 ==============
 
 Admins:
@@ -346,7 +365,7 @@ PMs:
 ### Emocog 테마 관리
 
 ```
-🎨 테마 업데이트
+ 테마 업데이트
 ===============
 
 현재 테마:
@@ -355,21 +374,21 @@ PMs:
 - 타이포그래피: Poppins 등
 
 액션 선택:
-  1. 🎨 색상 업데이트
-  2. 📝 타이포그래피 변경
-  3. 📏 간격(Spacing) 조정
-  4. ✨ 그림자(Shadows) 변경
-  5. ⏱️  애니메이션 수정
+ 1. 색상 업데이트
+ 2. 타이포그래피 변경
+ 3. 간격(Spacing) 조정
+ 4. 그림자(Shadows) 변경
+ 5. ⏱ 애니메이션 수정
 
 선택:
 > 1
 
-🎨 색상 업데이트
+ 색상 업데이트
 ================
 
 모드 선택:
-  1. Light 모드
-  2. Dark 모드
+ 1. Light 모드
+ 2. Dark 모드
 
 선택:
 > 1
@@ -398,7 +417,7 @@ Background 색상 변경:
 변경하시겠습니까? (y/n):
 > y
 
-✅ 색상이 업데이트되었습니다!
+ 색상이 업데이트되었습니다!
 
 변경 사항:
 - Light 모드 primary 업데이트
@@ -409,11 +428,11 @@ Background 색상 변경:
 - components/theme/tokens.css
 - components/theme/gluestack-theme.ts
 
-🔄 CSS 변수 재생성 중...
-✅ tokens.css 업데이트됨
+ CSS 변수 재생성 중...
+ tokens.css 업데이트됨
 
-🔄 Gluestack 토큰 재생성 중...
-✅ gluestack-theme.ts 업데이트됨
+ Gluestack 토큰 재생성 중...
+ gluestack-theme.ts 업데이트됨
 ```
 
 ---
@@ -421,7 +440,7 @@ Background 색상 변경:
 ## 옵션 4: 역할 및 권한 관리
 
 ```
-🔐 역할 및 권한 관리
+ 역할 및 권한 관리
 ===================
 
 현재 역할 정의:
@@ -431,19 +450,19 @@ Background 색상 변경:
 - pm: /setup, /flow, /create-issue
 
 액션 선택:
-  1. ✏️  역할 수정
-  2. 🔑 권한 추가
-  3. ❌ 권한 제거
-  4. 📋 권한 조회
+ 1. 역할 수정
+ 2. 권한 추가
+ 3. 권한 제거
+ 4. 권한 조회
 
 선택:
 > 1
 
 수정할 역할:
-  1. admin
-  2. developer
-  3. designer
-  4. pm
+ 1. admin
+ 2. developer
+ 3. designer
+ 4. pm
 
 선택:
 > 3
@@ -456,9 +475,9 @@ Designer 역할 현재 설정:
 - can_create_flows: true
 
 변경할 항목:
-  1. can_modify_components: true → false
-  2. can_modify_specs: false → true
-  3. 기타
+ 1. can_modify_components: true → false
+ 2. can_modify_specs: false → true
+ 3. 기타
 
 선택:
 > 2
@@ -469,7 +488,7 @@ Designer 역할 현재 설정:
 변경하시겠습니까? (y/n):
 > y
 
-✅ 역할이 업데이트되었습니다!
+ 역할이 업데이트되었습니다!
 
 roles.yaml 업데이트됨
 PR 생성 대기 중...
@@ -480,7 +499,7 @@ PR 생성 대기 중...
 ## 옵션 5: CHANGELOG 작성
 
 ```
-📋 CHANGELOG 작성
+ CHANGELOG 작성
 =================
 
 마지막 항목:
@@ -490,14 +509,14 @@ PR 생성 대기 중...
 > 1.1.0
 
 변경 유형 선택 (복수 선택 가능):
-  [ ] ✨ Features
-  [ ] 🐛 Bugfixes
-  [ ] 📚 Documentation
-  [ ] 🔨 Refactoring
-  [ ] 📦 Dependencies
+ [ ] Features
+ [ ] Bugfixes
+ [ ] Documentation
+ [ ] Refactoring
+ [ ] Dependencies
 
 선택 (쉼표로 구분):
-> ✨, 📚
+> , 
 
 Features:
 > 팀원 추가 기능 개선
@@ -508,12 +527,12 @@ Documentation:
 > 플로우 예제 추가
 
 ========================
-✅ CHANGELOG가 업데이트되었습니다!
+ CHANGELOG가 업데이트되었습니다!
 
 생성된 항목:
 - v1.1.0 (2024-02-24)
-  - ✨ Features: 2개
-  - 📚 Documentation: 2개
+ - Features: 2개
+ - Documentation: 2개
 
 PR 생성 대기 중...
 ```
@@ -523,36 +542,36 @@ PR 생성 대기 중...
 ## 옵션 6: 통계 보기
 
 ```
-📊 템플릿 통계
+ 템플릿 통계
 ==============
 
-📦 컴포넌트:
+ 컴포넌트:
 - Web: 12개
 - Native: 5개
 - 총합: 17개
 
-🌿 서비스 플로우:
+ 서비스 플로우:
 - 활성 브랜치: 3개
 - 완료된 플로우: 2개
 
-👥 팀 구성:
+ 팀 구성:
 - Admin: 1명
 - Developer: 1명
 - Designer: 2명
 - PM: 1명
 - 총합: 5명
 
-📝 문서:
+ 문서:
 - 스펙 파일: 2개
 - 템플릿: 2개
 - 명령어: 5개
 
-🔄 최근 활동:
+ 최근 활동:
 - PR 생성 (지난 7일): 8개
 - 이슈 생성 (지난 7일): 12개
 - 커밋 (지난 7일): 25개
 
-📈 성장 추세:
+ 성장 추세:
 - 컴포넌트 추가: +3개 (지난 월)
 - 팀원 추가: +2명 (지난 월)
 - PR 병합: +12개 (지난 월)
@@ -563,7 +582,7 @@ PR 생성 대기 중...
 ## PR 생성 및 검토
 
 ```
-🔄 PR 생성
+ PR 생성
 ==========
 
 변경 사항 요약:
@@ -578,10 +597,10 @@ PR 정보:
 파일 수: 5개
 
 ========================
-✅ PR이 생성되었습니다!
+ PR이 생성되었습니다!
 
-📍 PR 링크: https://github.com/{owner}/{repo}/pull/789
-📌 상태: Open (리뷰 대기 중)
+ PR 링크: https://github.com/{owner}/{repo}/pull/789
+ 상태: Open (리뷰 대기 중)
 
 병합 전 체크리스트:
 - [ ] 모든 파일이 검토됨
@@ -598,19 +617,19 @@ PR 정보:
 
 ```
 1. /admin 실행
-   ↓
+ ↓
 2. 관리 옵션 선택
-   ↓
+ ↓
 3. git worktree 자동 생성 (메인 브랜치 보호)
-   ↓
+ ↓
 4. 파일 수정
-   ↓
+ ↓
 5. CHANGELOG 업데이트 (자동)
-   ↓
+ ↓
 6. PR 자동 생성
-   ↓
+ ↓
 7. 다른 admin/developer 승인
-   ↓
+ ↓
 8. main 브랜치로 자동 병합
 ```
 

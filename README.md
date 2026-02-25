@@ -64,21 +64,21 @@
 
 ```
 service-flow-template/
-├── .claude/                 # Claude Code 설정
-│   ├── commands/           # 명령어 구현 (/setup, /designer, /flow, 등)
-│   ├── manifests/          # 설정 파일 (roles, team, theme)
-│   ├── spec/               # 개발 규칙 (component-spec, flow-spec)
-│   ├── templates/          # PR/이슈 템플릿
-│   ├── hooks/              # 세션 시작 훅 (git sync + 신원 로드)
-│   └── settings.json       # Claude 권한 설정
-├── components/             # 재사용 가능한 컴포넌트 라이브러리
-│   ├── web/               # Next.js / Vite / Remix 컴포넌트
-│   ├── native/            # React Native (Gluestack) 컴포넌트
-│   └── theme/             # Emocog 테마 (CSS vars + Gluestack)
-├── flows/                 # 서비스 플로우 (main에서는 gitignored)
-│   └── {product-name}/   # 제품별 플로우
-├── CLAUDE.md             # 프로젝트 AI 지침
-└── README.md             # 이 파일
+├── .claude/ # Claude Code 설정
+│ ├── commands/ # 명령어 구현 (/setup, /designer, /flow, 등)
+│ ├── manifests/ # 설정 파일 (roles, team, theme)
+│ ├── spec/ # 개발 규칙 (component-spec, flow-spec)
+│ ├── templates/ # PR/이슈 템플릿
+│ ├── hooks/ # 세션 시작 훅 (git sync + 신원 로드)
+│ └── settings.json # Claude 권한 설정
+├── components/ # 재사용 가능한 컴포넌트 라이브러리
+│ ├── web/ # Next.js / Vite / Remix 컴포넌트
+│ ├── native/ # React Native (Gluestack) 컴포넌트
+│ └── theme/ # Emocog 테마 (CSS vars + Gluestack)
+├── flows/ # 서비스 플로우 (main에서는 gitignored)
+│ └── {product-name}/ # 제품별 플로우
+├── CLAUDE.md # 프로젝트 AI 지침
+└── README.md # 이 파일
 ```
 
 ---
@@ -91,7 +91,7 @@ service-flow-template/
 
 ```typescript
 <button className="bg-primary text-primary-foreground hover:opacity-90">
-  Primary Button
+ Primary Button
 </button>
 ```
 
@@ -99,7 +99,7 @@ service-flow-template/
 
 ```typescript
 <Button bg="$primary">
-  <Text>Primary Button</Text>
+ <Text>Primary Button</Text>
 </Button>
 ```
 
@@ -139,8 +139,8 @@ service-flow-template/
 
 | 브랜치 | 내용 | `flows/` 추적 |
 |--------|------|--------|
-| `main` | 템플릿 + 컴포넌트 라이브러리 | ❌ gitignored |
-| `flow/{product-name}` | 제품별 서비스 플로우 | ✅ 추적됨 |
+| `main` | 템플릿 + 컴포넌트 라이브러리 | gitignored |
+| `flow/{product-name}` | 제품별 서비스 플로우 | 추적됨 |
 
 **워크플로우**:
 1. PM이 `/flow {product-name}` 실행
@@ -173,21 +173,21 @@ service-flow-template/
 
 매 세션 시작 시 자동으로:
 
-1. ✅ 사용자 신원 로드
-2. ✅ GH 토큰 로드
-3. ✅ 로컬 파일 보호
-4. ✅ Git 동기화 (pull --rebase)
-5. ✅ 상태 리포트 출력
+1. 사용자 신원 로드
+2. GH 토큰 로드
+3. 로컬 파일 보호
+4. Git 동기화 (pull --rebase)
+5. 상태 리포트 출력
 
 ```
 === Service Flow Template — Session Start ===
-✅ 안녕하세요, 홍길동 (designer)!
+ 안녕하세요, 홍길동 (designer)!
 
-📦 웹 컴포넌트: 12개
-📱 네이티브 컴포넌트: 5개
-🌿 브랜치: main
+ 웹 컴포넌트: 12개
+ 네이티브 컴포넌트: 5개
+ 브랜치: main
 
-명령어: /setup  /admin  /designer  /flow  /create-issue
+명령어: /setup /admin /designer /flow /create-issue
 ```
 
 ---

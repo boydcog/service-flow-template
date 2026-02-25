@@ -93,11 +93,11 @@ bash scripts/validate-lockfile.sh
 ### 1단계: `.gh-token` 파일 확인
 ```bash
 if [ ! -f .gh-token ]; then
-  # 토큰 파일 없음
-  echo "❌ .gh-token 파일이 없습니다."
-  echo "템플릿 관리자에게 문의하세요:"
-  grep -A 5 "^admins:" .claude/manifests/admins.yaml | grep -E "name|github|email"
-  exit 1
+ # 토큰 파일 없음
+ echo " .gh-token 파일이 없습니다."
+ echo "템플릿 관리자에게 문의하세요:"
+ grep -A 5 "^admins:" .claude/manifests/admins.yaml | grep -E "name|github|email"
+ exit 1
 fi
 ```
 
@@ -105,16 +105,16 @@ fi
 ```bash
 GH_TOKEN=$(cat .gh-token)
 if [ -z "$GH_TOKEN" ]; then
-  echo "❌ .gh-token이 비어있습니다."
-  echo "템플릿 관리자에게 문의하세요"
-  exit 1
+ echo " .gh-token이 비어있습니다."
+ echo "템플릿 관리자에게 문의하세요"
+ exit 1
 fi
 
 # API 호출로 검증
 if ! curl -s -H "Authorization: token $GH_TOKEN" https://api.github.com/user > /dev/null 2>&1; then
-  echo "❌ 토큰이 유효하지 않습니다."
-  echo "템플릿 관리자에게 문의하세요"
-  exit 1
+ echo " 토큰이 유효하지 않습니다."
+ echo "템플릿 관리자에게 문의하세요"
+ exit 1
 fi
 ```
 
@@ -263,36 +263,36 @@ git update-index --no-skip-worktree flows/
 ```
 service-flow-template/
 ├── .claude/
-│   ├── commands/
-│   │   ├── setup.md              # /setup 명령어 구현
-│   │   ├── admin.md              # /admin 명령어 구현
-│   │   ├── designer.md           # /designer 명령어 구현
-│   │   ├── flow.md               # /flow 명령어 구현
-│   │   └── create-issue.md       # /create-issue 명령어 구현
-│   ├── manifests/
-│   │   ├── roles.yaml            # 역할별 권한 정의
-│   │   ├── team.yaml             # 팀원 명단 (admin 관리)
-│   │   └── theme.yaml            # Emocog 테마 레퍼런스
-│   ├── spec/
-│   │   ├── component-spec.md     # 컴포넌트 생성 규칙 (프레임워크별)
-│   │   └── flow-spec.md          # 서비스 플로우 컨벤션
-│   ├── templates/
-│   │   ├── pr-template.md        # PR 본문 템플릿
-│   │   └── issue-template.md     # 이슈 본문 템플릿
-│   ├── hooks/
-│   │   ├── startup.sh            # 세션 시작 훅 (git sync + 신원 로드)
-│   │   └── startup.ps1           # Windows 동등 구현
-│   └── settings.json             # Claude 권한 + 훅 + env 설정
+│ ├── commands/
+│ │ ├── setup.md # /setup 명령어 구현
+│ │ ├── admin.md # /admin 명령어 구현
+│ │ ├── designer.md # /designer 명령어 구현
+│ │ ├── flow.md # /flow 명령어 구현
+│ │ └── create-issue.md # /create-issue 명령어 구현
+│ ├── manifests/
+│ │ ├── roles.yaml # 역할별 권한 정의
+│ │ ├── team.yaml # 팀원 명단 (admin 관리)
+│ │ └── theme.yaml # Emocog 테마 레퍼런스
+│ ├── spec/
+│ │ ├── component-spec.md # 컴포넌트 생성 규칙 (프레임워크별)
+│ │ └── flow-spec.md # 서비스 플로우 컨벤션
+│ ├── templates/
+│ │ ├── pr-template.md # PR 본문 템플릿
+│ │ └── issue-template.md # 이슈 본문 템플릿
+│ ├── hooks/
+│ │ ├── startup.sh # 세션 시작 훅 (git sync + 신원 로드)
+│ │ └── startup.ps1 # Windows 동등 구현
+│ └── settings.json # Claude 권한 + 훅 + env 설정
 ├── components/
-│   ├── web/                      # Next.js / Vite / Remix 컴포넌트
-│   ├── native/                   # React Native (Gluestack) 컴포넌트
-│   └── theme/
-│       ├── tokens.css            # Emocog CSS 변수
-│       └── gluestack-theme.ts    # Gluestack 토큰 매핑
-├── flows/                        # main에서는 gitignored
-│   └── .gitkeep
+│ ├── web/ # Next.js / Vite / Remix 컴포넌트
+│ ├── native/ # React Native (Gluestack) 컴포넌트
+│ └── theme/
+│ ├── tokens.css # Emocog CSS 변수
+│ └── gluestack-theme.ts # Gluestack 토큰 매핑
+├── flows/ # main에서는 gitignored
+│ └── .gitkeep
 ├── .gitignore
-└── CLAUDE.md                     # 이 파일
+└── CLAUDE.md # 이 파일
 ```
 
 ---
@@ -301,8 +301,8 @@ service-flow-template/
 
 | 브랜치 | 내용 | `flows/` 추적 |
 |--------|------|--------|
-| `main` | 템플릿 + 컴포넌트 라이브러리 | ❌ gitignored |
-| `flow/{product-name}` | 제품별 서비스 플로우 | ✅ 추적됨 |
+| `main` | 템플릿 + 컴포넌트 라이브러리 | gitignored |
+| `flow/{product-name}` | 제품별 서비스 플로우 | 추적됨 |
 
 **워크플로우**:
 1. PM이 `/flow {product-name}` 실행
@@ -329,26 +329,26 @@ github: hong-gildong
 
 매 세션 시작 시 `.claude/hooks/startup.sh`가 자동 실행되어:
 
-1. ✅ 사용자 신원 로드
-2. ✅ GH 토큰 로드
-3. ✅ 로컬 파일 보호 (git skip-worktree)
-4. ✅ Git 동기화 (pull --rebase)
-5. ✅ 상태 리포트 출력
+1. 사용자 신원 로드
+2. GH 토큰 로드
+3. 로컬 파일 보호 (git skip-worktree)
+4. Git 동기화 (pull --rebase)
+5. 상태 리포트 출력
 
 ```
 === Service Flow Template — Session Start ===
-✅ 안녕하세요, 홍길동 (designer)!
+ 안녕하세요, 홍길동 (designer)!
 
-📦 웹 컴포넌트: 12개
-📱 네이티브 컴포넌트: 5개
-🌿 브랜치: main
+ 웹 컴포넌트: 12개
+ 네이티브 컴포넌트: 5개
+ 브랜치: main
 
-명령어: /setup  /admin  /designer  /flow  /create-issue
+명령어: /setup /admin /designer /flow /create-issue
 ```
 
 ---
 
-## ✅ 품질 검증 규칙 (Strict Mode)
+## 품질 검증 규칙 (Strict Mode)
 
 **모든 산출물은 품질 검증을 "무조건" 통과해야만 완료로 인정됩니다.**
 
@@ -387,10 +387,10 @@ npm run lint
 npm run type-check
 ```
 **Strict 설정** (이미 활성화):
-- `"strict": true` ✅
-- `"noUnusedLocals": true` ✅
-- `"noUnusedParameters": true` ✅
-- `"noFallthroughCasesInSwitch": true` ✅
+- `"strict": true` 
+- `"noUnusedLocals": true` 
+- `"noUnusedParameters": true` 
+- `"noFallthroughCasesInSwitch": true` 
 
 #### 4단계: Test (Unit + Integration)
 ```bash
@@ -432,40 +432,40 @@ Format + Lint + Type-check + Test (15초)
 **모든 Claude 생성 코드는 다음 기준으로 작성**:
 
 1. **TypeScript Strict 모드** 준수
-   - 모든 타입 명시적 지정
-   - `any` 타입 금지
-   - 반환 타입 필수 작성
+ - 모든 타입 명시적 지정
+ - `any` 타입 금지
+ - 반환 타입 필수 작성
 
 2. **Props 인터페이스** 정의
-   ```typescript
-   export interface MyComponentProps extends React.HTMLAttributes<HTMLDivElement> {
-     variant?: "default" | "outlined"
-     size?: "sm" | "md" | "lg"
-   }
-   ```
+ ```typescript
+ export interface MyComponentProps extends React.HTMLAttributes<HTMLDivElement> {
+ variant?: "default" | "outlined"
+ size?: "sm" | "md" | "lg"
+ }
+ ```
 
 3. **에러 핸들링** 필수
-   - try-catch로 예외 처리
-   - 사용자 피드백 메시지 포함
+ - try-catch로 예외 처리
+ - 사용자 피드백 메시지 포함
 
 4. **테스트 케이스** 포함
-   - 기본 렌더링 테스트
-   - Props 변화 테스트
-   - 에러 상황 테스트
+ - 기본 렌더링 테스트
+ - Props 변화 테스트
+ - 에러 상황 테스트
 
 5. **JSDoc 주석** (공개 API)
-   ```typescript
-   /**
-    * 사용자 입력을 받는 폼 컴포넌트
-    * @param props - 컴포넌트 props
-    * @returns 렌더링된 폼 요소
-    */
-   ```
+ ```typescript
+ /**
+ * 사용자 입력을 받는 폼 컴포넌트
+ * @param props - 컴포넌트 props
+ * @returns 렌더링된 폼 요소
+ */
+ ```
 
 6. **Prettier 포맷** 사전 적용
-   - 라인 너비 100
-   - 세미콜론 필수
-   - 트레일링 콤마
+ - 라인 너비 100
+ - 세미콜론 필수
+ - 트레일링 콤마
 
 ### Storybook 스토리 작성 규칙
 
@@ -473,7 +473,7 @@ Format + Lint + Type-check + Test (15초)
 
 ```bash
 components/web/ui/my-component.tsx
-components/web/ui/my-component.stories.tsx  ← 필수!
+components/web/ui/my-component.stories.tsx ← 필수!
 ```
 
 스토리 파일 템플릿:
@@ -482,15 +482,15 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { MyComponent } from './my-component'
 
 const meta = {
-  title: 'Web/MyComponent',
-  component: MyComponent,
-  tags: ['autodocs'],
-  argTypes: {
-    variant: {
-      control: 'select',
-      options: ['default', 'outlined'],
-    },
-  },
+ title: 'Web/MyComponent',
+ component: MyComponent,
+ tags: ['autodocs'],
+ argTypes: {
+ variant: {
+ control: 'select',
+ options: ['default', 'outlined'],
+ },
+ },
 } satisfies Meta<typeof MyComponent>
 
 export default meta
@@ -500,39 +500,39 @@ type Story = StoryObj<typeof meta>
  * 기본 상태
  */
 export const Default: Story = {
-  args: {
-    children: 'Default',
-  },
+ args: {
+ children: 'Default',
+ },
 }
 
 /**
  * Outlined 변형
  */
 export const Outlined: Story = {
-  args: {
-    variant: 'outlined',
-    children: 'Outlined',
-  },
+ args: {
+ variant: 'outlined',
+ children: 'Outlined',
+ },
 }
 ```
 
 ### 검증 실패 예시
 
 ```
-⚠️  품질 검증 실패 (Strict Mode)
+ 품질 검증 실패 (Strict Mode)
 
-[Format]      ✅ 코드 포맷 정상
+[Format] 코드 포맷 정상
 
-[Lint]        ❌ 1 error
-  - Line 45: react/prop-types: prop 'variant' is missing
+[Lint] 1 error
+ - Line 45: react/prop-types: prop 'variant' is missing
 
-[Type-check]  ❌ 2 errors
-  - Line 78: Type 'string' is not assignable to type 'never'
-  - Line 92: Object is possibly 'undefined'
+[Type-check] 2 errors
+ - Line 78: Type 'string' is not assignable to type 'never'
+ - Line 92: Object is possibly 'undefined'
 
-[Test]        ✅ 모든 테스트 통과
+[Test] 모든 테스트 통과
 
-❌ 린트와 타입 에러를 먼저 해결하세요.
+ 린트와 타입 에러를 먼저 해결하세요.
 수동 수정 또는 npm run lint -- --fix 실행 후 재검증하세요.
 
 PR 생성 불가.
@@ -542,16 +542,16 @@ PR 생성 불가.
 
 ```
 ========================================
-✅ 품질 검증 완료 (Strict Mode 통과)
+ 품질 검증 완료 (Strict Mode 통과)
 ========================================
 
-📊 검증 결과:
-  [Format]      ✅ 코드 포맷 정상
-  [Lint]        ✅ 에러 0개
-  [Type-check]  ✅ 타입 검증 통과
-  [Test]        ✅ 모든 테스트 통과
+ 검증 결과:
+ [Format] 코드 포맷 정상
+ [Lint] 에러 0개
+ [Type-check] 타입 검증 통과
+ [Test] 모든 테스트 통과
 
-🎉 완료! PR 생성 가능합니다.
+ 완료! PR 생성 가능합니다.
 ```
 
 ---
@@ -579,18 +579,18 @@ PR 생성 불가.
 ```
 components/
 ├── web/ui/
-│   ├── button.tsx          # Web: shadcn/ui + Tailwind
-│   ├── input.tsx
-│   ├── card.tsx
-│   └── ...
+│ ├── button.tsx # Web: shadcn/ui + Tailwind
+│ ├── input.tsx
+│ ├── card.tsx
+│ └── ...
 ├── native/ui/
-│   ├── Button.tsx          # Native: PascalCase + Gluestack
-│   ├── Input.tsx
-│   ├── Card.tsx
-│   └── ...
+│ ├── Button.tsx # Native: PascalCase + Gluestack
+│ ├── Input.tsx
+│ ├── Card.tsx
+│ └── ...
 └── theme/
-    ├── tokens.css          # Web CSS 변수 (Tailwind v4)
-    └── gluestack-theme.ts  # Native Gluestack 토큰
+ ├── tokens.css # Web CSS 변수 (Tailwind v4)
+ └── gluestack-theme.ts # Native Gluestack 토큰
 ```
 
 ### 명명 규칙
@@ -601,16 +601,16 @@ components/
 모든 컴포넌트는 동일한 Props 인터페이스를 제공해야 합니다:
 
 ```typescript
-// Web ✅
+// Web 
 export interface ButtonProps extends React.ComponentPropsWithoutRef<"button"> {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
-  size?: "default" | "sm" | "lg" | "icon"
+ variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
+ size?: "default" | "sm" | "lg" | "icon"
 }
 
-// Native ✅ (동일한 Props)
+// Native (동일한 Props)
 export interface ButtonProps extends React.ComponentPropsWithoutRef<typeof GluestackButton> {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
-  size?: "default" | "sm" | "lg" | "icon"
+ variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
+ size?: "default" | "sm" | "lg" | "icon"
 }
 ```
 
@@ -639,14 +639,14 @@ Web 컴포넌트 변경 시:
 ```typescript
 // components/web/ui/mycomponent.tsx
 export interface MyComponentProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "outlined"
-  size?: "sm" | "md" | "lg"
+ variant?: "default" | "outlined"
+ size?: "sm" | "md" | "lg"
 }
 
 export const MyComponent = forwardRef<HTMLDivElement, MyComponentProps>(
-  ({ variant = "default", size = "md", ...props }, ref) => {
-    // Web 구현 (Tailwind CSS)
-  }
+ ({ variant = "default", size = "md", ...props }, ref) => {
+ // Web 구현 (Tailwind CSS)
+ }
 )
 ```
 
@@ -654,14 +654,14 @@ export const MyComponent = forwardRef<HTMLDivElement, MyComponentProps>(
 ```typescript
 // components/native/ui/MyComponent.tsx
 export interface MyComponentProps extends React.ComponentPropsWithoutRef<typeof GluestackBox> {
-  variant?: "default" | "outlined"
-  size?: "sm" | "md" | "lg"
+ variant?: "default" | "outlined"
+ size?: "sm" | "md" | "lg"
 }
 
 export const MyComponent = forwardRef<typeof GluestackBox, MyComponentProps>(
-  ({ variant = "default", size = "md", ...props }, ref) => {
-    // Native 구현 (Gluestack)
-  }
+ ({ variant = "default", size = "md", ...props }, ref) => {
+ // Native 구현 (Gluestack)
+ }
 )
 ```
 

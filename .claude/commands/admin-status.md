@@ -16,11 +16,11 @@ GitHub에 직접 진입하지 않고 **CLI에서 변경사항 상태를 확인**
 ### 1단계: 옵션 선택 (AskUserQuestion - optional)
 ```
 무엇을 확인하시겠습니까?
-  1. 전체 상태 (기본)
-  2. PR 상태만 (--pr)
-  3. 브랜치 상태만 (--branch)
-  4. 로컬 변경사항만 (--local)
-  5. 마이그레이션 상태만 (--migration)
+ 1. 전체 상태 (기본)
+ 2. PR 상태만 (--pr)
+ 3. 브랜치 상태만 (--branch)
+ 4. 로컬 변경사항만 (--local)
+ 5. 마이그레이션 상태만 (--migration)
 ```
 
 ### 2단계: 스크립트 자동 실행
@@ -46,24 +46,24 @@ bash .claude/hooks/check-status.sh
 # Service Flow Template — 상태 확인
 # ========================================
 #
-# 💾 로컬 변경사항
+# 로컬 변경사항
 # 최근 커밋:
-#   3f7a8c2 admin: 팀원 추가
+# 3f7a8c2 admin: 팀원 추가
 #
-# 🌿 브랜치 상태
+# 브랜치 상태
 # 현재 브랜치: admin/1708741600
-# 📤 로컬 커밋 (미푸시): 1개
+# 로컬 커밋 (미푸시): 1개
 #
-# 📊 PR 상태 확인
+# PR 상태 확인
 # PR #123: [admin] 보이드: 팀원 추가 [OPEN]
 #
-# ✅ 최근 병합된 PR
+# 최근 병합된 PR
 # PR #122: [designer] 박나현: Button 컴포넌트 (병합: 2026-02-24)
 #
-# 🔄 마이그레이션 상태
+# 마이그레이션 상태
 # 현재 스키마: v2
 # 목표 스키마: v2
-# ✅ 스키마가 최신 버전입니다
+# 스키마가 최신 버전입니다
 ```
 
 ### 예 2: PR 상태만 확인
@@ -71,7 +71,7 @@ bash .claude/hooks/check-status.sh
 bash .claude/hooks/check-status.sh --pr
 
 # 출력:
-# 📊 PR 상태 확인
+# PR 상태 확인
 #
 # PR #123: [admin] 보이드: 팀원 추가 [OPEN]
 # PR #122: [designer] 박나현: Button 컴포넌트 [MERGED] (2026-02-24)
@@ -83,14 +83,14 @@ bash .claude/hooks/check-status.sh --pr
 bash .claude/hooks/check-status.sh --branch
 
 # 출력:
-# 🌿 브랜치 상태
+# 브랜치 상태
 #
 # 현재 브랜치: main
-# ✅ main 브랜치와 동기화됨
+# main 브랜치와 동기화됨
 #
-# 📝 스테이징된 파일: 0개
-# ⚠️  수정된 파일 (미스테이징): 2개
-# ❓ Untracked 파일: 0개
+# 스테이징된 파일: 0개
+# 수정된 파일 (미스테이징): 2개
+# Untracked 파일: 0개
 ```
 
 ### 예 4: 로컬 변경사항만 확인
@@ -98,17 +98,17 @@ bash .claude/hooks/check-status.sh --branch
 bash .claude/hooks/check-status.sh --local
 
 # 출력:
-# 💾 로컬 변경사항
+# 로컬 변경사항
 #
 # 최근 커밋:
-#   3f7a8c2 admin: 팀원 추가
-#   b4d5e1f admin: 테마 업데이트
-#   c6f9g2h [designer] 버튼 컴포넌트
+# 3f7a8c2 admin: 팀원 추가
+# b4d5e1f admin: 테마 업데이트
+# c6f9g2h [designer] 버튼 컴포넌트
 #
 # 변경 통계:
-#  manifests/team.yaml | 2 ++
-#  manifests/theme.yaml | 5 +-
-#  1 file changed, 5 insertions(+), 3 deletions(-)
+# manifests/team.yaml | 2 ++
+# manifests/theme.yaml | 5 +-
+# 1 file changed, 5 insertions(+), 3 deletions(-)
 ```
 
 ### 예 5: 마이그레이션 상태만 확인
@@ -116,11 +116,11 @@ bash .claude/hooks/check-status.sh --local
 bash .claude/hooks/check-status.sh --migration
 
 # 출력:
-# 🔄 마이그레이션 상태
+# 마이그레이션 상태
 #
 # 현재 스키마: v2
 # 목표 스키마: v2
-# ✅ 스키마가 최신 버전입니다
+# 스키마가 최신 버전입니다
 ```
 
 ---
@@ -176,8 +176,8 @@ cat .claude/state/logs/admin-actions.log
 
 PR 상태 확인 불가. 다른 옵션 사용:
 ```bash
-bash .claude/hooks/check-status.sh --local      # PR 없이 로컬만 확인
-bash .claude/hooks/check-status.sh --branch     # PR 없이 브랜치만 확인
+bash .claude/hooks/check-status.sh --local # PR 없이 로컬만 확인
+bash .claude/hooks/check-status.sh --branch # PR 없이 브랜치만 확인
 ```
 
 ### "GitHub 토큰을 찾을 수 없습니다"

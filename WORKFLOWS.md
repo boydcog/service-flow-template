@@ -4,19 +4,19 @@
 
 ---
 
-## 📋 Overview
+## Overview
 
 각 역할별로 **자동 검증 + 환경 실행**을 통합한 워크플로우입니다.
 
 | 역할 | 명령어 | 검증 과정 | 실행 환경 | 사용 사례 |
 |------|--------|---------|---------|---------|
-| 🎨 **Designer** | `npm run designer` | Lint → Type → Test | Storybook (6006) | 컴포넌트 개발 |
-| 📱 **PM** | `npm run pm` | Lint → Type → Test | Dev Server (3001) | 서비스 플로우 |
-| ⚙️ **Admin** | `npm run admin` | Lint → Type → Test | 메뉴 + 선택 | 템플릿 관리 |
+| **Designer** | `npm run designer` | Lint → Type → Test | Storybook (6006) | 컴포넌트 개발 |
+| **PM** | `npm run pm` | Lint → Type → Test | Dev Server (3001) | 서비스 플로우 |
+| **Admin** | `npm run admin` | Lint → Type → Test | 메뉴 + 선택 | 템플릿 관리 |
 
 ---
 
-## 🎨 Designer Workflow
+## Designer Workflow
 
 **컴포넌트 개발 및 시각화**
 
@@ -27,33 +27,33 @@ npm run designer
 
 ### Execution Flow
 ```
-1️⃣  Lint Check
-    ├─ ESLint validation
-    ├─ Code style check
-    └─ ✅ Pass → Continue
+1 Lint Check
+ ├─ ESLint validation
+ ├─ Code style check
+ └─ Pass → Continue
 
-2️⃣  Type Check
-    ├─ TypeScript compilation
-    ├─ Type safety validation
-    └─ ⚠️  Warnings allowed → Continue
+2 Type Check
+ ├─ TypeScript compilation
+ ├─ Type safety validation
+ └─ Warnings allowed → Continue
 
-3️⃣  Test Suite
-    ├─ Component tests
-    ├─ Unit tests
-    └─ ✅ Pass → Continue
+3 Test Suite
+ ├─ Component tests
+ ├─ Unit tests
+ └─ Pass → Continue
 
-4️⃣  Storybook Launch
-    ├─ http://localhost:6006/
-    ├─ Hot reload enabled
-    └─ 📖 Interactive component stories
+4 Storybook Launch
+ ├─ http://localhost:6006/
+ ├─ Hot reload enabled
+ └─ Interactive component stories
 ```
 
 ### Features
-- ✅ Automatic code validation
-- ✅ Hot module reload (HMR)
-- ✅ Component story writing
-- ✅ Visual regression testing ready
-- ✅ Design system documentation
+- Automatic code validation
+- Hot module reload (HMR)
+- Component story writing
+- Visual regression testing ready
+- Design system documentation
 
 ### Workflow
 ```bash
@@ -79,7 +79,7 @@ vim components/web/ui/button.tsx
 
 ---
 
-## 📱 PM Workflow
+## PM Workflow
 
 **서비스 플로우 및 통합 개발**
 
@@ -90,34 +90,34 @@ npm run pm
 
 ### Execution Flow
 ```
-1️⃣  Lint Check
-    ├─ ESLint validation
-    ├─ Code style check
-    └─ ✅ Pass → Continue
+1 Lint Check
+ ├─ ESLint validation
+ ├─ Code style check
+ └─ Pass → Continue
 
-2️⃣  Type Check
-    ├─ TypeScript compilation
-    ├─ Type safety validation
-    └─ ⚠️  Warnings allowed → Continue
+2 Type Check
+ ├─ TypeScript compilation
+ ├─ Type safety validation
+ └─ Warnings allowed → Continue
 
-3️⃣  Test Suite
-    ├─ Integration tests
-    ├─ Component integration
-    └─ ✅ Pass → Continue
+3 Test Suite
+ ├─ Integration tests
+ ├─ Component integration
+ └─ Pass → Continue
 
-4️⃣  Dev Server Launch
-    ├─ http://localhost:3001/
-    ├─ Hot reload enabled
-    ├─ Demo page active
-    └─ 🌐 Full component showcase
+4 Dev Server Launch
+ ├─ http://localhost:3001/
+ ├─ Hot reload enabled
+ ├─ Demo page active
+ └─ Full component showcase
 ```
 
 ### Features
-- ✅ Live component testing
-- ✅ Dark mode toggle
-- ✅ Real-time updates (HMR)
-- ✅ Integration ready
-- ✅ Service flow design
+- Live component testing
+- Dark mode toggle
+- Real-time updates (HMR)
+- Integration ready
+- Service flow design
 
 ### Workflow
 ```bash
@@ -134,7 +134,7 @@ vim flows/my-product/index.tsx
 # Flows update instantly (HMR)
 
 # 5. Verify dark mode
-# Toggle 🌙/☀️ in header
+# Toggle / in header
 ```
 
 ### Best Practices
@@ -146,7 +146,7 @@ vim flows/my-product/index.tsx
 
 ---
 
-## ⚙️ Admin Workflow
+## Admin Workflow
 
 **템플릿 및 환경 관리**
 
@@ -157,24 +157,24 @@ npm run admin
 
 ### Execution Flow
 ```
-1️⃣  Lint Check ✅
-2️⃣  Type Check ⚠️
-3️⃣  Test Suite ✅
-4️⃣  Interactive Menu
-    ├─ 1. Edit component specs
-    ├─ 2. Edit role definitions
-    ├─ 3. Update theme
-    ├─ 4. Build for production
-    ├─ 5. Start dev server
-    └─ 6. View Storybook
+1 Lint Check 
+2 Type Check 
+3 Test Suite 
+4 Interactive Menu
+ ├─ 1. Edit component specs
+ ├─ 2. Edit role definitions
+ ├─ 3. Update theme
+ ├─ 4. Build for production
+ ├─ 5. Start dev server
+ └─ 6. View Storybook
 ```
 
 ### Features
-- ✅ Role/permission management
-- ✅ Theme configuration
-- ✅ Template updates
-- ✅ Production builds
-- ✅ Environment control
+- Role/permission management
+- Theme configuration
+- Template updates
+- Production builds
+- Environment control
 
 ### Workflow
 ```bash
@@ -204,7 +204,7 @@ npm run build
 
 ---
 
-## 🔧 Verification Process (All Roles)
+## Verification Process (All Roles)
 
 ### Step 1: Lint Check
 ```bash
@@ -242,38 +242,38 @@ npm run test
 
 ---
 
-## 📦 Package Manager Support
+## Package Manager Support
 
 ### npm (Current)
 ```bash
 npm install
-npm run designer   # Works
-npm run pm        # Works
-npm run admin     # Works
+npm run designer # Works
+npm run pm # Works
+npm run admin # Works
 ```
 
 ### pnpm (Compatible)
 ```bash
 pnpm install
-npm run designer   # Works
-npm run pm        # Works
-npm run admin     # Works
+npm run designer # Works
+npm run pm # Works
+npm run admin # Works
 ```
 
 ### Configuration
 ```json
 {
-  "packageManager": "npm@10.x || pnpm@10.x"
+ "packageManager": "npm@10.x || pnpm@10.x"
 }
 ```
 
 ---
 
-## 💡 Quick Reference
+## Quick Reference
 
 ### Designer
 ```bash
-npm run designer        # Start workflow
+npm run designer # Start workflow
 # ↓
 # Storybook opens (port 6006)
 # Edit components/web/ui/*.tsx
@@ -282,7 +282,7 @@ npm run designer        # Start workflow
 
 ### PM
 ```bash
-npm run pm             # Start workflow
+npm run pm # Start workflow
 # ↓
 # Dev server opens (port 3001)
 # Edit src/App.tsx or flows/
@@ -291,7 +291,7 @@ npm run pm             # Start workflow
 
 ### Admin
 ```bash
-npm run admin          # Start workflow
+npm run admin # Start workflow
 # ↓
 # Menu appears (select action)
 # 1. Edit specs
@@ -302,7 +302,7 @@ npm run admin          # Start workflow
 
 ---
 
-## ⚡ Manual Verification Only
+## Manual Verification Only
 
 If you just want to run verification without launching an environment:
 
@@ -349,21 +349,21 @@ npm run dev -- --port 3002
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ```
 scripts/roles/
-├── designer.sh      # 🎨 Designer workflow
-├── pm.sh           # 📱 PM workflow
-└── admin.sh        # ⚙️  Admin workflow
+├── designer.sh # Designer workflow
+├── pm.sh # PM workflow
+└── admin.sh # Admin workflow
 
-.npmrc              # Package manager config
-package.json        # Role commands defined
+.npmrc # Package manager config
+package.json # Role commands defined
 ```
 
 ---
 
-## ✅ Checklist
+## Checklist
 
 - [ ] All verifications pass (lint, type-check, test)
 - [ ] Environment launches correctly
@@ -374,7 +374,7 @@ package.json        # Role commands defined
 
 ---
 
-## 📝 Notes
+## Notes
 
 - **Verification is mandatory** before launching environment
 - **HMR enabled** in all workflows (auto-reload on file changes)
@@ -385,4 +385,4 @@ package.json        # Role commands defined
 ---
 
 **Last Updated:** 2026-02-24
-**Status:** ✅ Production Ready
+**Status:** Production Ready

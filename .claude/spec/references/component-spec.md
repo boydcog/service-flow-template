@@ -27,10 +27,10 @@ components/web/{ComponentName}.tsx
 import React from 'react'
 
 interface {ComponentName}Props {
-  // Props 정의
-  children?: React.ReactNode
-  className?: string
-  [key: string]: any
+ // Props 정의
+ children?: React.ReactNode
+ className?: string
+ [key: string]: any
 }
 
 /**
@@ -42,15 +42,15 @@ interface {ComponentName}Props {
  * <{ComponentName} prop1="value">Content</{ComponentName}>
  */
 export const {ComponentName}: React.FC<{ComponentName}Props> = ({
-  children,
-  className = '',
-  ...props
+ children,
+ className = '',
+ ...props
 }) => {
-  return (
-    <div className={`emocog-component ${className}`} {...props}>
-      {children}
-    </div>
-  )
+ return (
+ <div className={`emocog-component ${className}`} {...props}>
+ {children}
+ </div>
+ )
 }
 ```
 
@@ -60,32 +60,32 @@ export const {ComponentName}: React.FC<{ComponentName}Props> = ({
 ```typescript
 // Tailwind CSS 유틸리티 클래스
 <button className="bg-primary text-primary-foreground">
-  Primary Button
+ Primary Button
 </button>
 
 // 또는 CSS 변수 (권장)
 <button className="bg-[var(--emocog-primary)] text-[var(--emocog-primary-foreground)]">
-  Primary Button
+ Primary Button
 </button>
 ```
 
 #### 반응형 설정
 ```typescript
 <div className="
-  px-4 sm:px-6 md:px-8 lg:px-10
-  text-sm md:text-base lg:text-lg
+ px-4 sm:px-6 md:px-8 lg:px-10
+ text-sm md:text-base lg:text-lg
 ">
-  반응형 컴포넌트
+ 반응형 컴포넌트
 </div>
 ```
 
 #### 다크 모드
 ```typescript
 <div className="
-  bg-white dark:bg-slate-950
-  text-gray-900 dark:text-white
+ bg-white dark:bg-slate-950
+ text-gray-900 dark:text-white
 ">
-  다크 모드 지원
+ 다크 모드 지원
 </div>
 ```
 
@@ -95,49 +95,49 @@ export const {ComponentName}: React.FC<{ComponentName}Props> = ({
 import React from 'react'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'destructive' | 'muted'
-  size?: 'sm' | 'md' | 'lg'
-  isLoading?: boolean
-  children: React.ReactNode
+ variant?: 'primary' | 'secondary' | 'destructive' | 'muted'
+ size?: 'sm' | 'md' | 'lg'
+ isLoading?: boolean
+ children: React.ReactNode
 }
 
 const variantStyles = {
-  primary: 'bg-primary text-primary-foreground hover:opacity-90',
-  secondary: 'bg-secondary text-secondary-foreground hover:opacity-90',
-  destructive: 'bg-destructive text-destructive-foreground hover:opacity-90',
-  muted: 'bg-muted text-muted-foreground hover:opacity-80',
+ primary: 'bg-primary text-primary-foreground hover:opacity-90',
+ secondary: 'bg-secondary text-secondary-foreground hover:opacity-90',
+ destructive: 'bg-destructive text-destructive-foreground hover:opacity-90',
+ muted: 'bg-muted text-muted-foreground hover:opacity-80',
 }
 
 const sizeStyles = {
-  sm: 'px-3 py-1 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
+ sm: 'px-3 py-1 text-sm',
+ md: 'px-4 py-2 text-base',
+ lg: 'px-6 py-3 text-lg',
 }
 
 export const Button: React.FC<ButtonProps> = ({
-  variant = 'primary',
-  size = 'md',
-  isLoading = false,
-  children,
-  className = '',
-  disabled,
-  ...props
+ variant = 'primary',
+ size = 'md',
+ isLoading = false,
+ children,
+ className = '',
+ disabled,
+ ...props
 }) => {
-  return (
-    <button
-      className={`
-        rounded-md font-medium transition-all duration-200
-        disabled:opacity-50 disabled:cursor-not-allowed
-        ${variantStyles[variant]}
-        ${sizeStyles[size]}
-        ${className}
-      `}
-      disabled={disabled || isLoading}
-      {...props}
-    >
-      {isLoading ? '로딩 중...' : children}
-    </button>
-  )
+ return (
+ <button
+ className={`
+ rounded-md font-medium transition-all duration-200
+ disabled:opacity-50 disabled:cursor-not-allowed
+ ${variantStyles[variant]}
+ ${sizeStyles[size]}
+ ${className}
+ `}
+ disabled={disabled || isLoading}
+ {...props}
+ >
+ {isLoading ? '로딩 중...' : children}
+ </button>
+ )
 }
 ```
 
@@ -158,9 +158,9 @@ import { styled } from '@gluestack-ui/styled-components'
 import { Text, View } from 'react-native'
 
 interface {ComponentName}Props {
-  // Props 정의
-  children?: React.ReactNode
-  [key: string]: any
+ // Props 정의
+ children?: React.ReactNode
+ [key: string]: any
 }
 
 /**
@@ -169,14 +169,14 @@ interface {ComponentName}Props {
  * {짧은 설명}
  */
 export const {ComponentName}: React.FC<{ComponentName}Props> = ({
-  children,
-  ...props
+ children,
+ ...props
 }) => {
-  return (
-    <View sx={{ /* gluestack styles */ }}>
-      {children}
-    </View>
-  )
+ return (
+ <View sx={{ /* gluestack styles */ }}>
+ {children}
+ </View>
+ )
 }
 ```
 
@@ -186,16 +186,16 @@ export const {ComponentName}: React.FC<{ComponentName}Props> = ({
 import { Button, Text, VStack } from '@gluestack-ui/themed'
 
 export const NativeButton = () => {
-  return (
-    <VStack space="md">
-      <Button bg="$primary" action="primary">
-        <Text>Primary</Text>
-      </Button>
-      <Button bg="$destructive" action="negative">
-        <Text>Destructive</Text>
-      </Button>
-    </VStack>
-  )
+ return (
+ <VStack space="md">
+ <Button bg="$primary" action="primary">
+ <Text>Primary</Text>
+ </Button>
+ <Button bg="$destructive" action="negative">
+ <Text>Destructive</Text>
+ </Button>
+ </VStack>
+ )
 }
 ```
 
@@ -207,22 +207,22 @@ export const NativeButton = () => {
 
 ```typescript
 interface ComponentProps {
-  // 필수
-  id: string
-  title: string
+ // 필수
+ id: string
+ title: string
 
-  // 선택 (기본값)
-  variant?: 'primary' | 'secondary'
-  size?: 'sm' | 'md' | 'lg'
-  disabled?: boolean
+ // 선택 (기본값)
+ variant?: 'primary' | 'secondary'
+ size?: 'sm' | 'md' | 'lg'
+ disabled?: boolean
 
-  // 이벤트 핸들러
-  onClick?: (event: React.MouseEvent) => void
-  onChange?: (value: any) => void
+ // 이벤트 핸들러
+ onClick?: (event: React.MouseEvent) => void
+ onChange?: (value: any) => void
 
-  // 스타일
-  className?: string
-  style?: React.CSSProperties
+ // 스타일
+ className?: string
+ style?: React.CSSProperties
 }
 ```
 
@@ -235,16 +235,16 @@ interface ComponentProps {
 **권장**: 인라인 클래스 사용
 ```typescript
 <div className="flex items-center justify-between gap-4 px-4 py-2">
-  {/* ... */}
+ {/* ... */}
 </div>
 ```
 
 **피할 것**: 하드코딩 된 색상
 ```typescript
-// ❌ 나쁨
+// 나쁨
 <div style={{ color: '#2b65ff' }}>Bad</div>
 
-// ✅ 좋음
+// 좋음
 <div className="text-primary">Good</div>
 ```
 
@@ -253,15 +253,15 @@ interface ComponentProps {
 ```css
 /* components/theme/tokens.css */
 :root {
-  --emocog-primary: oklch(0.488 0.243 264.376);
-  --emocog-primary-foreground: oklch(0.985 0.001 106.423);
+ --emocog-primary: oklch(0.488 0.243 264.376);
+ --emocog-primary-foreground: oklch(0.985 0.001 106.423);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --emocog-primary: #2b65ff;
-    --emocog-primary-foreground: #ffffff;
-  }
+ :root {
+ --emocog-primary: #2b65ff;
+ --emocog-primary-foreground: #ffffff;
+ }
 }
 ```
 
@@ -285,12 +285,12 @@ interface ComponentProps {
  *
  * @example
  * <Button variant="primary" size="md">
- *   클릭하세요
+ * 클릭하세요
  * </Button>
  *
  * @example
  * <Button variant="destructive" disabled>
- *   삭제 (비활성화)
+ * 삭제 (비활성화)
  * </Button>
  */
 ```
@@ -303,12 +303,12 @@ interface ComponentProps {
 
 ```typescript
 <button
-  type="button"
-  aria-label="메뉴 열기"
-  aria-expanded={isOpen}
-  aria-controls="menu-list"
+ type="button"
+ aria-label="메뉴 열기"
+ aria-expanded={isOpen}
+ aria-controls="menu-list"
 >
-  <Menu size={24} />
+ <Menu size={24} />
 </button>
 ```
 
@@ -318,11 +318,11 @@ interface ComponentProps {
 const [focusedIndex, setFocusedIndex] = React.useState(0)
 
 const handleKeyDown = (e: React.KeyboardEvent) => {
-  if (e.key === 'ArrowDown') {
-    setFocusedIndex((prev) => (prev + 1) % items.length)
-  } else if (e.key === 'ArrowUp') {
-    setFocusedIndex((prev) => (prev - 1 + items.length) % items.length)
-  }
+ if (e.key === 'ArrowDown') {
+ setFocusedIndex((prev) => (prev + 1) % items.length)
+ } else if (e.key === 'ArrowUp') {
+ setFocusedIndex((prev) => (prev - 1 + items.length) % items.length)
+ }
 }
 ```
 
@@ -344,22 +344,22 @@ import { render, screen } from '@testing-library/react'
 import { Button } from './Button'
 
 describe('Button', () => {
-  it('renders with text', () => {
-    render(<Button>Click me</Button>)
-    expect(screen.getByText('Click me')).toBeInTheDocument()
-  })
+ it('renders with text', () => {
+ render(<Button>Click me</Button>)
+ expect(screen.getByText('Click me')).toBeInTheDocument()
+ })
 
-  it('handles click events', () => {
-    const handleClick = jest.fn()
-    render(<Button onClick={handleClick}>Click</Button>)
-    screen.getByText('Click').click()
-    expect(handleClick).toHaveBeenCalled()
-  })
+ it('handles click events', () => {
+ const handleClick = jest.fn()
+ render(<Button onClick={handleClick}>Click</Button>)
+ screen.getByText('Click').click()
+ expect(handleClick).toHaveBeenCalled()
+ })
 
-  it('applies variant styles', () => {
-    const { container } = render(<Button variant="destructive">Delete</Button>)
-    expect(container.querySelector('button')).toHaveClass('bg-destructive')
-  })
+ it('applies variant styles', () => {
+ const { container } = render(<Button variant="destructive">Delete</Button>)
+ expect(container.querySelector('button')).toHaveClass('bg-destructive')
+ })
 })
 ```
 

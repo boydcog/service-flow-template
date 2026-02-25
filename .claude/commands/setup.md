@@ -13,32 +13,32 @@
 이 명령을 실행할 때 Claude가 따라야 할 단계:
 
 1. `.user-identity` 파일이 이미 존재하는지 확인
-   - 존재하면: "이미 설정됨" 메시지 표시하고, 수정 여부 확인
-   - 없으면: 새로 설정 시작
+ - 존재하면: "이미 설정됨" 메시지 표시하고, 수정 여부 확인
+ - 없으면: 새로 설정 시작
 
 2. AskUserQuestion으로 다음 정보 수집:
-   - 사용자 이름 (필수)
-   - 역할 (선택: admin/developer/designer/pm)
-   - GitHub 사용자명 (필수)
+ - 사용자 이름 (필수)
+ - 역할 (선택: admin/developer/designer/pm)
+ - GitHub 사용자명 (필수)
 
 3. 사용자 입력 확인 후:
-   - `.user-identity` 파일 생성 (포맷 하단 참조)
-   - chmod 644 설정
-   - git skip-worktree 활성화: `git update-index --skip-worktree .user-identity`
+ - `.user-identity` 파일 생성 (포맷 하단 참조)
+ - chmod 644 설정
+ - git skip-worktree 활성화: `git update-index --skip-worktree .user-identity`
 
 4. GitHub 토큰 저장:
-   - 사용자에게 GitHub Personal Access Token 입력 요청 (토큰 생성 URL 제공)
-   - `.gh-token` 파일 생성 (1줄, 토큰 내용만)
-   - chmod 600 설정
-   - git skip-worktree 활성화: `git update-index --skip-worktree .gh-token`
+ - 사용자에게 GitHub Personal Access Token 입력 요청 (토큰 생성 URL 제공)
+ - `.gh-token` 파일 생성 (1줄, 토큰 내용만)
+ - chmod 600 설정
+ - git skip-worktree 활성화: `git update-index --skip-worktree .gh-token`
 
 5. GitHub 토큰 검증:
-   - `gh auth verify --hostname github.com` 실행 또는 API 호출로 검증
-   - 실패 시: 토큰 재입력 유도
+ - `gh auth verify --hostname github.com` 실행 또는 API 호출로 검증
+ - 실패 시: 토큰 재입력 유도
 
 6. 완료 메시지 출력:
-   - 설정된 신원 정보 확인
-   - 다음 사용 가능한 명령어 안내 (역할에 따라)
+ - 설정된 신원 정보 확인
+ - 다음 사용 가능한 명령어 안내 (역할에 따라)
 
 ---
 
@@ -55,18 +55,18 @@
 ### 1단계: 사용자 이름 입력
 
 ```
-👤 사용자 이름을 입력하세요:
+ 사용자 이름을 입력하세요:
 > 홍길동
 ```
 
 ### 2단계: 역할 선택
 
 ```
-🎭 역할을 선택하세요:
-  1. admin (관리자)
-  2. developer (개발자)
-  3. designer (디자이너)
-  4. pm (기획자)
+ 역할을 선택하세요:
+ 1. admin (관리자)
+ 2. developer (개발자)
+ 3. designer (디자이너)
+ 4. pm (기획자)
 
 선택:
 > 3
@@ -75,14 +75,14 @@
 ### 3단계: GitHub 사용자명 입력
 
 ```
-🐙 GitHub 사용자명을 입력하세요 (예: john-doe):
+ GitHub 사용자명을 입력하세요 (예: john-doe):
 > hong-gildong
 ```
 
 ### 4단계: GitHub Access Token 입력
 
 ```
-🔑 GitHub Personal Access Token을 입력하세요:
+ GitHub Personal Access Token을 입력하세요:
 (https://github.com/settings/tokens에서 생성)
 
 Token (입력은 화면에 표시되지 않습니다):
@@ -98,8 +98,8 @@ Token (입력은 화면에 표시되지 않습니다):
 ### 5단계: 연결 확인
 
 ```
-✅ GitHub 토큰 검증 중...
-✅ 연결 성공! (사용자: hong-gildong)
+ GitHub 토큰 검증 중...
+ 연결 성공! (사용자: hong-gildong)
 
 설정이 완료되었습니다!
 - 이름: 홍길동
