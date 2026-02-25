@@ -100,12 +100,28 @@ if [ ! -f .gh-token ]; then
 fi
 ```
 
-#### 4-2. Issue 생성
+#### 4-2. Issue 생성 (curl 기반 - .gh-token만 사용)
 ```bash
-gh issue create \
- --title "$TITLE" \
- --body "$BODY" \
- --label "$LABEL"
+# GitHub API로 Issue 생성
+GH_TOKEN=$(cat .gh-token)
+REPO_URL=$(git remote get-url origin | sed 's|.*github.com[:/]||' | sed 's|\.git$||')
+IFS='/' read -r OWNER REPO_NAME <<< "$REPO_URL"
+
+ISSUE_DATA=$(cat <<EOF
+{
+  "title": "$TITLE",
+  "body": "$BODY",
+  "labels": ["$LABEL"]
+}
+EOF
+)
+
+curl -s -X POST \
+  -H "Authorization: token $GH_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json" \
+  -H "Content-Type: application/json" \
+  -d "$ISSUE_DATA" \
+  "https://api.github.com/repos/$OWNER/$REPO_NAME/issues"
 ```
 
 생성 시 포함 정보:

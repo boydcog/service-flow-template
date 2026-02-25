@@ -70,7 +70,7 @@ WARN 사용자 미설정"
 fi
 
 # ──────────────────────────────────────
-# 3. GH 토큰 로드
+# 3. GH 토큰 로드 및 Git 인증 설정
 # ──────────────────────────────────────
 GH_TOKEN_LOADED="false"
 if [ -f .gh-token ]; then
@@ -79,7 +79,17 @@ if [ -f .gh-token ]; then
     chmod 600 .gh-token 2>/dev/null || true
     export GH_TOKEN="$TOKEN_CONTENT"
     GH_TOKEN_LOADED="true"
+
+    # Git 인증 설정 (.gh-token 기반)
+    git config --local user.name "Claude Code Bot"
+    git config --local user.email "bot@claudecode.local"
+    git config --local credential.helper store
+
+    # Git credential에 토큰 정보 저장 (.gh-token만 사용)
+    echo "https://:${GH_TOKEN}@github.com" | git credential approve 2>/dev/null || true
+
     echo "✅ GitHub 토큰 로드됨"
+    echo "✅ Git 인증 설정 완료 (.gh-token 기반)"
     STATUS="$STATUS
 OK GitHub 토큰 로드"
   else

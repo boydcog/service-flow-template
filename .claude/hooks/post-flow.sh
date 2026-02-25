@@ -128,7 +128,7 @@ git add flows/ 2>/dev/null || true
 git status --short
 echo ""
 
-#  PR  
+#  PR
 echo " PR  ..."
 read -p "PR ? (y/n): " -r
 echo ""
@@ -138,22 +138,56 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   source ./.claude/hooks/gh-token-validate.sh || exit 1
 
   BRANCH_NAME="flow/$FLOW_NAME-$(date +%s)"
-  git remote set-url origin "https://${GH_TOKEN}@github.com/boydcog/service-flow-template.git"
+
+  # Git 인증 설정 (.gh-token 기반)
+  git config --local user.name "Claude Code Bot"
+  git config --local user.email "bot@claudecode.local"
+  git config --local credential.helper store
+  echo "https://:${GH_TOKEN}@github.com" | git credential approve
 
   git checkout -b "$BRANCH_NAME" 2>/dev/null || git switch -c "$BRANCH_NAME"
   git add flows/
   git commit -m "[flow] $FLOW_NAME service flow creation" 2>/dev/null || true
 
-  gh pr create --title "[flow] $FLOW_NAME service flow" \
-    --body "## Summary\n- New flow: $FLOW_NAME\n\n## Validation (Strict Mode)\n- Format: Pass\n- Lint: Error 0\n- Type-check: Pass\n- Test: 100% Pass\n- Dev Server: Verified" \
-    --base main 2>/dev/null || echo "PR creation skipped (gh cli required)"
+  # Git push with .gh-token (토큰만 사용)
+  git push -u origin "$BRANCH_NAME" 2>&1 || {
+    echo "Git push 실패"
+    exit 1
+  }
 
-  # Remove token from URL (security)
-  git remote set-url origin "https://github.com/boydcog/service-flow-template.git"
+  # GitHub API로 PR 생성 (.gh-token만 사용)
+  REPO_URL=$(git remote get-url origin | sed 's|.*github.com[:/]||' | sed 's|\.git$||')
+  IFS='/' read -r OWNER REPO_NAME <<< "$REPO_URL"
 
-  echo "PR created successfully"
+  PR_DATA=$(cat <<'EOF'
+{
+  "title": "[flow] FLOW_NAME service flow",
+  "body": "## Summary\n- New flow: FLOW_NAME\n\n## Validation (Strict Mode)\n- Format: Pass\n- Lint: Error 0\n- Type-check: Pass\n- Test: 100% Pass\n- Dev Server: Verified",
+  "head": "BRANCH_NAME",
+  "base": "main"
+}
+EOF
+)
+
+  PR_DATA="${PR_DATA//FLOW_NAME/$FLOW_NAME}"
+  PR_DATA="${PR_DATA//BRANCH_NAME/$BRANCH_NAME}"
+
+  PR_RESPONSE=$(curl -s -X POST \
+    -H "Authorization: token $GH_TOKEN" \
+    -H "Accept: application/vnd.github.v3+json" \
+    -H "Content-Type: application/json" \
+    -d "$PR_DATA" \
+    "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls")
+
+  PR_NUMBER=$(echo "$PR_RESPONSE" | grep -o '"number": [0-9]*' | grep -o '[0-9]*' | head -1)
+
+  if [ -n "$PR_NUMBER" ]; then
+    echo "PR 생성 성공: #$PR_NUMBER"
+  else
+    echo "PR 생성 실패 (GitHub API 오류)"
+  fi
 else
-  echo "ℹ  PR  "
+  echo "PR 생성 스킵"
 fi
 
 echo ""

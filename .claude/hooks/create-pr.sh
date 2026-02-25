@@ -89,31 +89,47 @@ if ! git push -u origin "$BRANCH_NAME"; then
 fi
 
 # ──────────────────────────────────────
-# PR 생성
+# PR 생성 (curl 기반 - .gh-token만 사용)
 # ──────────────────────────────────────
 echo "📝 PR 생성 중..."
-if gh pr create \
-    --title "$PR_TITLE" \
-    --body "$PR_BODY" \
-    --base main \
-    --head "$BRANCH_NAME"; then
 
+# GitHub API 정보 추출
+REPO_URL=$(git remote get-url origin)
+REPO=$(echo "$REPO_URL" | sed 's|.*github.com[:/]||' | sed 's|\.git$||')
+IFS='/' read -r OWNER REPO_NAME <<< "$REPO"
+
+# API 요청 데이터
+PR_DATA=$(cat <<EOF
+{
+  "title": "$PR_TITLE",
+  "body": "$PR_BODY",
+  "head": "$BRANCH_NAME",
+  "base": "main"
+}
+EOF
+)
+
+# PR 생성 API 호출 (curl로 .gh-token 사용)
+PR_RESPONSE=$(curl -s -X POST \
+  -H "Authorization: token $GH_TOKEN" \
+  -H "Accept: application/vnd.github.v3+json" \
+  -H "Content-Type: application/json" \
+  -d "$PR_DATA" \
+  "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls" 2>/dev/null)
+
+# PR 생성 결과 확인
+PR_NUMBER=$(echo "$PR_RESPONSE" | grep -o '"number": [0-9]*' | grep -o '[0-9]*' | head -1)
+PR_ERROR=$(echo "$PR_RESPONSE" | grep -o '"message": "[^"]*' | head -1)
+
+if [ -n "$PR_NUMBER" ]; then
     echo ""
     echo "✅ PR 생성 완료!"
-
-    # PR 링크 출력
-    PR_NUMBER=$(gh pr list --head "$BRANCH_NAME" --json number --jq '.[0].number' 2>/dev/null || echo "")
-    if [ -n "$PR_NUMBER" ]; then
-        REPO=$(git remote get-url origin | sed 's|.*github.com/||' | sed 's|\.git$||')
-        echo "📍 PR URL: https://github.com/$REPO/pull/$PR_NUMBER"
-
-        # PR 상태 표시
-        echo ""
-        echo "📊 PR 상태:"
-        gh pr view "$PR_NUMBER" --json statusCheckRollup,reviewDecision,isDraft --jq '.statusCheckRollup, .reviewDecision, .isDraft'
-    fi
+    echo "📍 PR URL: https://github.com/$OWNER/$REPO_NAME/pull/$PR_NUMBER"
 else
     echo "❌ PR 생성 실패"
+    if [ -n "$PR_ERROR" ]; then
+        echo "오류: $PR_ERROR"
+    fi
     exit 1
 fi
 
