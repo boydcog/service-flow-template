@@ -13,6 +13,22 @@ GitHub에 직접 진입하지 않고 **CLI에서 변경사항 상태를 확인**
 
 ## 실행 지시 (Claude Code)
 
+### 0단계: Git 동기화 (필수)
+
+```bash
+echo "🔄 최신 상태 동기화 중..."
+
+# Git 동기화 (상태 확인 전)
+git fetch origin
+if ! git pull --rebase origin main 2>&1 | grep -q "Already up to date"; then
+  echo "✅ 최신 커밋 적용됨"
+else
+  echo "✅ 이미 최신 상태"
+fi
+
+echo ""
+```
+
 ### 1단계: 옵션 선택 (AskUserQuestion - optional)
 ```
 무엇을 확인하시겠습니까?
