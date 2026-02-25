@@ -24,9 +24,10 @@ fi
 
 #### 1-2. 권한 검증 (admin, developer만 가능)
 ```bash
-# 사용자 정보 로드
+# .user-identity에서 사용자 정보 로드 (이미 설정됨)
 USER_NAME=$(grep '^name:' .user-identity | sed 's/name: //')
 USER_ROLE=$(grep '^role:' .user-identity | sed 's/role: //')
+USER_GITHUB=$(grep '^github:' .user-identity | sed 's/github: //')
 
 # 권한 검증: admin 또는 developer만 가능
 if [[ "$USER_ROLE" != "admin" && "$USER_ROLE" != "developer" ]]; then
@@ -42,9 +43,36 @@ if [[ "$USER_ROLE" != "admin" && "$USER_ROLE" != "developer" ]]; then
 fi
 
 echo "✅ 권한 확인 완료"
-echo "역할: $USER_ROLE | 사용자: $USER_NAME"
+echo "신원: $USER_NAME ($USER_ROLE)"
+echo "GitHub: $USER_GITHUB"
 echo ""
 echo "이 세션에서는 /admin을 사용해서 템플릿을 관리합니다."
+```
+
+#### 1-3. GitHub 토큰 검증
+```bash
+# .gh-token 파일 확인
+if [ ! -f .gh-token ]; then
+  echo ""
+  echo "⚠️ GitHub 토큰 파일이 없습니다"
+  echo "다음 URL에서 Personal Access Token 생성:"
+  echo "https://github.com/settings/tokens"
+  echo ""
+  echo "Token 입력:"
+  read -s GH_TOKEN
+  echo "$GH_TOKEN" > .gh-token
+  chmod 600 .gh-token
+  git update-index --skip-worktree .gh-token
+fi
+
+# 토큰 유효성 검증
+GH_TOKEN=$(cat .gh-token)
+if [ -z "$GH_TOKEN" ]; then
+  echo "❌ .gh-token 파일이 비어있습니다"
+  exit 1
+fi
+
+echo "✅ GitHub 토큰 검증 완료"
 ```
 
 ### 2단계: 관리 옵션 선택 (AskUserQuestion)
