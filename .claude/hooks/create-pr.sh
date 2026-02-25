@@ -132,8 +132,9 @@ else
     echo "PR 생성 실패"
     if [ -n "$PR_ERROR" ]; then
         echo "오류: $PR_ERROR"
+    else
+        echo "오류: GitHub API 응답 실패 (세부 정보는 로그 참고)"
     fi
-    echo "응답: $PR_RESPONSE"
     exit 1
 fi
 
