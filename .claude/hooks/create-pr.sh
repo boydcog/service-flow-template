@@ -118,7 +118,7 @@ PR_RESPONSE=$(curl -s -X POST \
   -H "Accept: application/vnd.github.v3+json" \
   -H "Content-Type: application/json" \
   -d "$PR_DATA" \
-  "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls" 2>/dev/null)
+  "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls")
 
 # PR 생성 결과 확인 (jq로 안전하게 파싱)
 PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number // empty' 2>/dev/null)

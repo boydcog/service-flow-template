@@ -143,17 +143,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # Validate GitHub token before PR creation
   source ./.claude/hooks/gh-token-validate.sh || exit 1
 
-  # Dependency checks
-  if ! command -v jq &> /dev/null; then
-    echo "오류: jq가 설치되지 않았습니다"
-    exit 1
-  fi
-
-  if [ -z "$GH_TOKEN" ]; then
-    echo "오류: GitHub 토큰이 설정되지 않았습니다"
-    exit 1
-  fi
-
   BRANCH_NAME="component/$COMPONENT_NAME-$(date +%s)"
 
   # Git 인증 설정 (.gh-token 기반)
@@ -172,10 +161,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     exit 1
   }
 
-  # GitHub API로 PR 생성 (.gh-token만 사용, jq 기반 안전 파싱)
-  REPO_URL=$(git remote get-url origin | sed 's|.*github.com[:/]||' | sed 's|\.git$||')
-  IFS='/' read -r OWNER REPO_NAME <<< "$REPO_URL"
-
+  # PR 생성 (create-pr.sh 호출 - 중복 로직 제거)
+  PR_TITLE="[designer] $COMPONENT_NAME component"
   PR_BODY="## Summary
 - New component: $COMPONENT_NAME
 - Framework: $FRAMEWORK
@@ -187,38 +174,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 - Test: 100% Pass
 - Storybook: Verified"
 
-  # JSON 생성 (jq로 안전하게)
-  PR_DATA=$(jq -n \
-    --arg title "[designer] $COMPONENT_NAME component" \
-    --arg body "$PR_BODY" \
-    --arg head "$BRANCH_NAME" \
-    --arg base "main" \
-    '{title: $title, body: $body, head: $head, base: $base}' 2>/dev/null)
-
-  if [ -z "$PR_DATA" ]; then
-    echo "오류: JSON 생성 실패"
-    exit 1
-  fi
-
-  PR_RESPONSE=$(curl -s -X POST \
-    -H "Authorization: token $GH_TOKEN" \
-    -H "Accept: application/vnd.github.v3+json" \
-    -H "Content-Type: application/json" \
-    -d "$PR_DATA" \
-    "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls")
-
-  PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number // empty' 2>/dev/null)
-  PR_ERROR=$(echo "$PR_RESPONSE" | jq -r '.message // empty' 2>/dev/null)
-
-  if [ -n "$PR_NUMBER" ]; then
-    echo "PR 생성 성공: #$PR_NUMBER"
-  else
-    if [ -n "$PR_ERROR" ]; then
-      echo "PR 생성 실패: $PR_ERROR"
-    else
-      echo "PR 생성 실패 (상세 정보는 로그 참고)"
-    fi
-  fi
+  bash ./.claude/hooks/create-pr.sh "$BRANCH_NAME" "$PR_TITLE" "$PR_BODY"
 else
   echo "PR 생성 스킵"
 fi
