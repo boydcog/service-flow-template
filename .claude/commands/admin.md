@@ -14,23 +14,66 @@
 ### 0단계: Git 동기화 및 마이그레이션 (필수)
 
 ```bash
+set -euo pipefail
+
 echo "🔄 최신 상태 동기화 중..."
 
-# 1. Git 동기화
-git fetch origin
-if ! git pull --rebase origin main 2>&1 | grep -q "Already up to date"; then
-  echo "✅ 최신 커밋 적용됨"
-else
+# ──────────────────────────────────────
+# 1. Git Fetch
+# ──────────────────────────────────────
+git fetch origin 2>&1 | grep -E "From|Fetching" || echo "✓ Fetch 완료"
+
+# ──────────────────────────────────────
+# 2. Git Pull (Rebase + Stash 처리)
+# ──────────────────────────────────────
+PULL_RESULT=$(git pull --rebase origin main 2>&1 || echo "pull-failed")
+
+if echo "$PULL_RESULT" | grep -q "Already up to date"; then
   echo "✅ 이미 최신 상태"
+elif echo "$PULL_RESULT" | grep -q "pull-failed"; then
+  # Pull 실패 시 Rebase abort + Stash + 재시도
+  echo "⚠️  Git pull 충돌 감지, 복구 시도 중..."
+  git rebase --abort 2>/dev/null || true
+
+  # Stash 저장
+  STASHED="false"
+  STASH_RESULT=$(git stash 2>&1)
+  if echo "$STASH_RESULT" | grep -q "Saved working directory"; then
+    STASHED="true"
+    echo "  • 로컬 변경사항 임시 저장됨"
+  fi
+
+  # 재시도
+  PULL_RESULT2=$(git pull --rebase origin main 2>&1 || echo "pull-failed-again")
+  if echo "$PULL_RESULT2" | grep -q "pull-failed-again"; then
+    git rebase --abort 2>/dev/null || true
+    if [ "$STASHED" = "true" ]; then
+      git stash pop 2>/dev/null || true
+    fi
+    echo "❌ Git pull 실패 (네트워크 오류 또는 충돌)"
+    echo "   수동 처리 필요: git status 확인 후 다시 시도"
+    exit 1
+  else
+    if [ "$STASHED" = "true" ]; then
+      git stash pop 2>/dev/null || true
+    fi
+    echo "✅ 최신 커밋 적용됨 (복구 완료)"
+  fi
+else
+  echo "✅ 최신 커밋 적용됨"
 fi
 
-# 2. 마이그레이션 감지 및 자동 실행
+# ──────────────────────────────────────
+# 3. 마이그레이션 감지 및 자동 실행
+# ──────────────────────────────────────
 CURRENT_SCHEMA=$(cat ".claude/state/_schema_version.txt" 2>/dev/null || echo "v1")
 TARGET_SCHEMA=$(cat ".claude/migrations/_target_version.txt" 2>/dev/null || echo "v1")
 
 if [ "$CURRENT_SCHEMA" != "$TARGET_SCHEMA" ]; then
+  echo ""
   echo "🔄 마이그레이션 감지: $CURRENT_SCHEMA → $TARGET_SCHEMA"
   MIGRATION_SCRIPT=".claude/migrations/${CURRENT_SCHEMA}-to-${TARGET_SCHEMA}.sh"
+
   if [ -f "$MIGRATION_SCRIPT" ]; then
     if bash "$MIGRATION_SCRIPT"; then
       echo "✅ 마이그레이션 완료"
@@ -39,7 +82,9 @@ if [ "$CURRENT_SCHEMA" != "$TARGET_SCHEMA" ]; then
       exit 1
     fi
   else
-    echo "⚠️  마이그레이션 스크립트 없음: $MIGRATION_SCRIPT"
+    echo "❌ 마이그레이션 스크립트 없음: $MIGRATION_SCRIPT"
+    echo "   관리자에게 문의하세요"
+    exit 1
   fi
 fi
 

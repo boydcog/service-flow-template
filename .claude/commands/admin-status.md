@@ -16,14 +16,49 @@ GitHub에 직접 진입하지 않고 **CLI에서 변경사항 상태를 확인**
 ### 0단계: Git 동기화 (필수)
 
 ```bash
+set -euo pipefail
+
 echo "🔄 최신 상태 동기화 중..."
 
-# Git 동기화 (상태 확인 전)
-git fetch origin
-if ! git pull --rebase origin main 2>&1 | grep -q "Already up to date"; then
-  echo "✅ 최신 커밋 적용됨"
-else
+# ──────────────────────────────────────
+# 1. Git Fetch
+# ──────────────────────────────────────
+git fetch origin 2>&1 | grep -E "From|Fetching" || echo "✓ Fetch 완료"
+
+# ──────────────────────────────────────
+# 2. Git Pull (Rebase + Stash 처리)
+# ──────────────────────────────────────
+PULL_RESULT=$(git pull --rebase origin main 2>&1 || echo "pull-failed")
+
+if echo "$PULL_RESULT" | grep -q "Already up to date"; then
   echo "✅ 이미 최신 상태"
+elif echo "$PULL_RESULT" | grep -q "pull-failed"; then
+  echo "⚠️  Git pull 충돌 감지, 복구 시도 중..."
+  git rebase --abort 2>/dev/null || true
+
+  STASHED="false"
+  STASH_RESULT=$(git stash 2>&1)
+  if echo "$STASH_RESULT" | grep -q "Saved working directory"; then
+    STASHED="true"
+    echo "  • 로컬 변경사항 임시 저장됨"
+  fi
+
+  PULL_RESULT2=$(git pull --rebase origin main 2>&1 || echo "pull-failed-again")
+  if echo "$PULL_RESULT2" | grep -q "pull-failed-again"; then
+    git rebase --abort 2>/dev/null || true
+    if [ "$STASHED" = "true" ]; then
+      git stash pop 2>/dev/null || true
+    fi
+    echo "❌ Git pull 실패 (네트워크 오류 또는 충돌)"
+    exit 1
+  else
+    if [ "$STASHED" = "true" ]; then
+      git stash pop 2>/dev/null || true
+    fi
+    echo "✅ 최신 커밋 적용됨 (복구 완료)"
+  fi
+else
+  echo "✅ 최신 커밋 적용됨"
 fi
 
 echo ""
