@@ -37,23 +37,29 @@ WARN gh CLI 미설치"
 fi
 
 # ──────────────────────────────────────
-# 2. 사용자 신원 로드 & 권한 검증
+# 2. 사용자 신원 & Git Remote 로드
 # ──────────────────────────────────────
 USER_NAME=""
 USER_ROLE="unknown"
+USER_GITHUB=""
 USER_COMMANDS=""
+GIT_REMOTE_URL=""
 
 if [ -f .user-identity ]; then
   USER_NAME=$(grep '^name:' .user-identity 2>/dev/null | sed 's/name: //' | tr -d '\n' || echo "")
   USER_ROLE=$(grep '^role:' .user-identity 2>/dev/null | sed 's/role: //' | tr -d '\n' || echo "unknown")
+  USER_GITHUB=$(grep '^github:' .user-identity 2>/dev/null | sed 's/github: //' | tr -d '\n' || echo "")
 
   echo "✅ 안녕하세요, $USER_NAME ($USER_ROLE)!"
   STATUS="$STATUS
 OK 사용자: $USER_NAME ($USER_ROLE)"
 
-  # ──────────────────────────────────────
-  # 2.5. 역할별 권한 로드 (roles.yaml 기반)
-  # ──────────────────────────────────────
+  # GitHub 사용자명으로 repository URL 구성
+  if [ -n "$USER_GITHUB" ]; then
+    GIT_REMOTE_URL="git@github.com:${USER_GITHUB}/service-flow-template.git"
+  fi
+
+  # 역할별 권한 로드 (roles.yaml 기반)
   if [ -f ".claude/manifests/roles.yaml" ]; then
     # 사용자 역할에 해당하는 commands 추출
     USER_COMMANDS=$(grep -A 10 "^  $USER_ROLE:" ".claude/manifests/roles.yaml" 2>/dev/null | grep "commands:" | sed 's/.*commands: \[//' | sed 's/\].*//' || echo "")
@@ -120,15 +126,52 @@ GIT_READY="false"
 CURRENT_BRANCH="main"
 
 if [ "$HAS_GIT" = "true" ]; then
+  # ──────────────────────────────────────
+  # 5.1. Git 저장소 초기화 또는 확인
+  # ──────────────────────────────────────
   if [ ! -d ".git" ]; then
+    echo "Git 저장소를 초기화 중입니다..."
     git init 2>/dev/null || true
-    git remote add origin "https://github.com/anthropics/service-flow-template.git" 2>/dev/null || true
     GIT_READY="true"
-    STATUS="$STATUS
-OK git 저장소 초기화"
+    CURRENT_BRANCH="main"
   else
     GIT_READY="true"
     CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
+  fi
+
+  # ──────────────────────────────────────
+  # 5.2. Git Remote 설정 또는 확인
+  # ──────────────────────────────────────
+  CURRENT_REMOTE=$(git config --get remote.origin.url 2>/dev/null || echo "")
+
+  if [ -z "$CURRENT_REMOTE" ]; then
+    # Remote가 없으면 설정
+    REMOTE_URL=""
+
+    # 우선순위 1: .user-identity에서 GitHub 사용자명 사용
+    if [ -n "$GIT_REMOTE_URL" ]; then
+      REMOTE_URL="$GIT_REMOTE_URL"
+    # 우선순위 2: .git-remote-url 파일
+    elif [ -f ".git-remote-url" ]; then
+      REMOTE_URL=$(cat .git-remote-url | tr -d '[:space:]')
+    # 우선순위 3: GitHub API (gh token 있을 때)
+    elif [ -f ".gh-token" ] && [ "$HAS_GH" = "true" ]; then
+      GH_TOKEN=$(cat .gh-token | tr -d '[:space:]')
+      REMOTE_URL=$(curl -s -H "Authorization: token $GH_TOKEN" https://api.github.com/user/repos \
+        | grep -o '"clone_url":"[^"]*"' | head -1 | sed 's/"clone_url":"//' | sed 's/"$//' 2>/dev/null || echo "")
+    fi
+
+    # 기본값 (boydcog의 service-flow-template)
+    if [ -z "$REMOTE_URL" ]; then
+      REMOTE_URL="git@github.com:boydcog/service-flow-template.git"
+    fi
+
+    git remote add origin "$REMOTE_URL" 2>/dev/null || true
+    STATUS="$STATUS
+OK Git Remote 설정: $REMOTE_URL"
+  else
+    STATUS="$STATUS
+OK Git Remote 확인됨: $CURRENT_REMOTE"
   fi
 
   # ──────────────────────────────────────
