@@ -91,23 +91,26 @@ fi
 # ──────────────────────────────────────
 # PR 생성 (curl 기반 - .gh-token만 사용)
 # ──────────────────────────────────────
-echo "📝 PR 생성 중..."
+echo "PR 생성 중..."
+
+# GH_TOKEN 최종 검증
+if [ -z "$GH_TOKEN" ]; then
+    echo "오류: GitHub 토큰이 설정되지 않았습니다"
+    exit 1
+fi
 
 # GitHub API 정보 추출
 REPO_URL=$(git remote get-url origin)
 REPO=$(echo "$REPO_URL" | sed 's|.*github.com[:/]||' | sed 's|\.git$||')
 IFS='/' read -r OWNER REPO_NAME <<< "$REPO"
 
-# API 요청 데이터
-PR_DATA=$(cat <<EOF
-{
-  "title": "$PR_TITLE",
-  "body": "$PR_BODY",
-  "head": "$BRANCH_NAME",
-  "base": "main"
-}
-EOF
-)
+# API 요청 데이터 (jq로 안전하게 JSON 생성)
+PR_DATA=$(jq -n \
+  --arg title "$PR_TITLE" \
+  --arg body "$PR_BODY" \
+  --arg head "$BRANCH_NAME" \
+  --arg base "main" \
+  '{title: $title, body: $body, head: $head, base: $base}')
 
 # PR 생성 API 호출 (curl로 .gh-token 사용)
 PR_RESPONSE=$(curl -s -X POST \
@@ -117,19 +120,20 @@ PR_RESPONSE=$(curl -s -X POST \
   -d "$PR_DATA" \
   "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls" 2>/dev/null)
 
-# PR 생성 결과 확인
-PR_NUMBER=$(echo "$PR_RESPONSE" | grep -o '"number": [0-9]*' | grep -o '[0-9]*' | head -1)
-PR_ERROR=$(echo "$PR_RESPONSE" | grep -o '"message": "[^"]*' | head -1)
+# PR 생성 결과 확인 (jq로 안전하게 파싱)
+PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number // empty' 2>/dev/null)
+PR_ERROR=$(echo "$PR_RESPONSE" | jq -r '.message // empty' 2>/dev/null)
 
 if [ -n "$PR_NUMBER" ]; then
     echo ""
-    echo "✅ PR 생성 완료!"
-    echo "📍 PR URL: https://github.com/$OWNER/$REPO_NAME/pull/$PR_NUMBER"
+    echo "PR 생성 성공!"
+    echo "PR URL: https://github.com/$OWNER/$REPO_NAME/pull/$PR_NUMBER"
 else
-    echo "❌ PR 생성 실패"
+    echo "PR 생성 실패"
     if [ -n "$PR_ERROR" ]; then
         echo "오류: $PR_ERROR"
     fi
+    echo "응답: $PR_RESPONSE"
     exit 1
 fi
 

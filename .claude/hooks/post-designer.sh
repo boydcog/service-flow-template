@@ -161,23 +161,27 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     exit 1
   }
 
-  # GitHub API로 PR 생성 (.gh-token만 사용)
+  # GitHub API로 PR 생성 (.gh-token만 사용, jq 기반 안전 파싱)
   REPO_URL=$(git remote get-url origin | sed 's|.*github.com[:/]||' | sed 's|\.git$||')
   IFS='/' read -r OWNER REPO_NAME <<< "$REPO_URL"
 
-  PR_DATA=$(cat <<'EOF'
-{
-  "title": "[designer] COMPONENT_NAME component",
-  "body": "## Summary\n- New component: COMPONENT_NAME\n- Framework: FRAMEWORK\n\n## Validation (Strict Mode)\n- Format: Pass\n- Lint: Error 0\n- Type-check: Pass\n- Test: 100% Pass\n- Storybook: Verified",
-  "head": "BRANCH_NAME",
-  "base": "main"
-}
-EOF
-)
+  PR_BODY="## Summary
+- New component: $COMPONENT_NAME
+- Framework: $FRAMEWORK
 
-  PR_DATA="${PR_DATA//COMPONENT_NAME/$COMPONENT_NAME}"
-  PR_DATA="${PR_DATA//FRAMEWORK/$FRAMEWORK}"
-  PR_DATA="${PR_DATA//BRANCH_NAME/$BRANCH_NAME}"
+## Validation (Strict Mode)
+- Format: Pass
+- Lint: Error 0
+- Type-check: Pass
+- Test: 100% Pass
+- Storybook: Verified"
+
+  PR_DATA=$(jq -n \
+    --arg title "[designer] $COMPONENT_NAME component" \
+    --arg body "$PR_BODY" \
+    --arg head "$BRANCH_NAME" \
+    --arg base "main" \
+    '{title: $title, body: $body, head: $head, base: $base}')
 
   PR_RESPONSE=$(curl -s -X POST \
     -H "Authorization: token $GH_TOKEN" \
@@ -186,12 +190,12 @@ EOF
     -d "$PR_DATA" \
     "https://api.github.com/repos/$OWNER/$REPO_NAME/pulls")
 
-  PR_NUMBER=$(echo "$PR_RESPONSE" | grep -o '"number": [0-9]*' | grep -o '[0-9]*' | head -1)
+  PR_NUMBER=$(echo "$PR_RESPONSE" | jq -r '.number // empty' 2>/dev/null)
 
   if [ -n "$PR_NUMBER" ]; then
     echo "PR 생성 성공: #$PR_NUMBER"
   else
-    echo "PR 생성 실패 (GitHub API 오류)"
+    echo "PR 생성 실패"
   fi
 else
   echo "PR 생성 스킵"
