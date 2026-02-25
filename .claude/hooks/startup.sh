@@ -280,16 +280,27 @@ fi
 # 11. 최종 상태 리포트
 # ──────────────────────────────────────
 echo ""
-WEB_COMPONENTS=$(find components/web/ui -name "*.tsx" 2>/dev/null | wc -l | tr -d ' ')
-NATIVE_COMPONENTS=$(find components/native/ui -name "*.tsx" 2>/dev/null | wc -l | tr -d ' ')
+
+# 컴포넌트 개수 계산 (오류 안전)
+WEB_COUNT=0
+NATIVE_COUNT=0
+if [ -d "components/web/ui" ]; then
+  WEB_COUNT=$(find components/web/ui -name "*.tsx" 2>/dev/null | wc -l || echo 0)
+  WEB_COUNT=$((WEB_COUNT))
+fi
+if [ -d "components/native/ui" ]; then
+  NATIVE_COUNT=$(find components/native/ui -name "*.tsx" 2>/dev/null | wc -l || echo 0)
+  NATIVE_COUNT=$((NATIVE_COUNT))
+fi
+
 echo "의존성:"
 echo "  git: $HAS_GIT"
 echo "  gh: $HAS_GH"
 echo "  brew: $HAS_BREW"
 echo ""
 echo "프로젝트 상태:"
-echo "  웹 컴포넌트: $WEB_COMPONENTS개"
-echo "  네이티브 컴포넌트: $NATIVE_COMPONENTS개"
+echo "  웹 컴포넌트: ${WEB_COUNT}개"
+echo "  네이티브 컴포넌트: ${NATIVE_COUNT}개"
 echo "  활성 플로우: ${ACTIVE_FLOW:-미설정}"
 echo "  현재 브랜치: $CURRENT_BRANCH"
 echo "  GH 토큰: $GH_TOKEN_LOADED"
